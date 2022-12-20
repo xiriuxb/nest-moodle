@@ -14,7 +14,7 @@ model User {
   id Int @id @default(autoincrement())
   name String @db.VarChar(64)
   last_name String @db.VarChar(64)
-  email String @db.VarChar(64)
+  email String @db.VarChar(64) @unique
   email_verified Boolean @default(false)
   password String @db.VarChar(255)
   country String? @db.VarChar(128)
