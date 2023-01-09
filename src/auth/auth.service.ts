@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
+import { Prisma } from "@prisma/client";
 import { DatabaseService } from "src/database/database.service";
 import { MailService } from "src/mail/mail.service";
-import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO } from "./auth.dto";
+import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";
 
 @Injectable()
 export class AuthService{
@@ -25,17 +25,17 @@ export class AuthService{
                 },
             });
             if(!await argon2.verify(user.password,dto.password)){
-                throw new Error();
+                throw new Error('Contraseña incorrecta');
             }
 
-            const token = await this.signToken(user.id, user.email)
+            const token = await this.signToken(user.email);
             return {token};
         } catch (error) {
             throw new HttpException({'message':[{'constrints':{'not-found':'Email o contraseña incorrecto(s)'}}]},HttpStatus.BAD_REQUEST);
         }
     }
 
-    async signToken(userId:number, email: string):Promise<string>{
+    async signToken(email: string):Promise<string>{
         const payload = {
             email
         }
@@ -53,7 +53,7 @@ export class AuthService{
                     AND:{deleted:false}
                 },
             });
-            const token = await this.signToken(user.id, user.email);
+            const token = await this.signToken(user.email);
             await this.dbService.user.update({
                 where: {
                   id: user.id,
@@ -93,5 +93,79 @@ export class AuthService{
             throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST)
         }
         return {message:'Contraseña actualizada', status:HttpStatus.OK};
+    }
+
+    async register(dto: UserRegisterDto) {
+        try {
+
+            const argon2 = require('argon2');
+            const pass = await argon2.hash(dto.password);
+            const username = await this.createUserName(dto.name, dto.last_name);
+            const token = await this.signToken(dto.email);
+            const newUser = await this.dbService.user.create({
+                data: {
+                    name: dto.name,
+                    last_name: dto.last_name,
+                    password: pass,
+                    email: dto.email,
+                    username: username,
+                    remember_token: token
+                },
+                select: {
+                    name: true,
+                    last_name: true,
+                    email: true,
+                    username: true
+                }
+            });
+            await this.mailService.sendConfirmEmail(newUser.email, newUser.name,token);
+            return newUser;
+        } catch (error) {
+            if(error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === 'P2002') {
+                    throw new HttpException({'message':[{'property':'email', 'constrints':{'used':'Email ya registrado'}}]},
+                     HttpStatus.BAD_REQUEST, { cause: new Error('') });
+                } else {
+                    throw new HttpException('Error', HttpStatus.BAD_REQUEST, { cause: new Error('') });
+                }
+            } else {
+                throw new HttpException('error', HttpStatus.BAD_REQUEST, { cause: new Error('') });
+            }
+        }
+    }
+
+    async confirmEmail(token:string, userEmail:string){
+        try{
+            const user = await this.dbService.user.findUniqueOrThrow(
+                {where:{
+                    email:userEmail,
+                }}
+            );
+            if(user.remember_token !== token){
+                throw new Error('Token inválido');
+            }
+            await this.dbService.user.update({
+                where:{id:user.id},
+                data:{remember_token:null, email_verified:true}
+            })
+        } catch(error) {
+            throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST)
+        }
+        return {message:'Email confirmado', status:HttpStatus.OK};
+    }
+
+    async resendConfirm(){
+        // TODO need auth token
+    }
+
+    private async createUserName(name: string, last_name: string) : Promise<string> {
+        const usern = name[0].toLowerCase().concat(last_name.toLowerCase());
+        const query = `${usern}%`;
+        const users = await this.dbService.$queryRaw`
+                SELECT COUNT(*) as count
+                FROM User
+                WHERE username LIKE ${query};
+            `;
+        return usern.concat(users[0].count);
     }
 }

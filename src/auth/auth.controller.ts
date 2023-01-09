@@ -1,7 +1,7 @@
 import { Body, Controller, Logger, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
-import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO } from "./auth.dto";
+import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 
 @Controller('auth')
@@ -28,6 +28,20 @@ export class AuthController{
         @Req() req:Request
     ){
         return this.authService.resetPassword(dto, token, req.user['email']);
+    }
+
+    @Post('register')
+    register(@Body() userRegisterDto: UserRegisterDto){
+      return this.authService.register(userRegisterDto);
+    }
+
+    @Post('confirm')
+    @UseGuards(AuthGuard('jwt_reset_password'))
+    confirmEmail(
+        @Query('token') token:string,
+        @Req() req:Request
+    ){
+        return this.authService.confirmEmail(token, req.user['email']);
     }
 
 }
