@@ -1,25 +1,25 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { User } from "@prisma/client";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { DatabaseService } from "src/database/database.service";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy,'jwt_query') {
+export class JwtStrategyBearer extends PassportStrategy(Strategy,'jwt_bearer') {
 
     constructor (config: ConfigService, private dbService:DatabaseService){
         super({
-            jwtFromRequest: ExtractJwt.fromUrlQueryParameter('token'),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: config.get('JWT_SECRET'),
         })
     }
 
-    async validate(payload:{userEmail:string}):Promise<User>{
+    async validate(payload:{email:string}){
+        Logger.log(payload.email);
         try{
             const user = await this.dbService.user.findFirstOrThrow(
                 {where:{
-                    email:payload.userEmail,
+                    email:payload.email,
                     AND:{deleted:false}
                 }}
             );

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { DatabaseService } from "src/database/database.service";
 import { MailService } from "src/mail/mail.service";
 import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";
@@ -18,12 +18,7 @@ export class AuthService{
     async login(dto: SigninDTO){
         const argon2 = require('argon2');
         try {
-            const user = await this.dbService.user.findFirstOrThrow({
-                where:{
-                    email:dto.email,
-                    AND:{deleted:false}
-                },
-            });
+            const user = await this.getUserByEmail(dto.email);
             if(!await argon2.verify(user.password,dto.password)){
                 throw new Error('Contraseña incorrecta');
             }
@@ -47,12 +42,7 @@ export class AuthService{
 
     async sendResetPassword(dto:ResetPasswordDTO){
         try {
-            const user = await this.dbService.user.findFirstOrThrow({
-                where:{
-                    email:dto.email,
-                    AND:{deleted:false}
-                },
-            });
+            const user = await this.getUserByEmail(dto.email);
             const token = await this.signToken(user.email);
             await this.dbService.user.update({
                 where: {
@@ -75,16 +65,11 @@ export class AuthService{
             throw new HttpException({'message':[{'constrints':{'password':'Las contraseñas no coinciden'}}]}, HttpStatus.BAD_REQUEST);
         }
         try{
-            const user = await this.dbService.user.findUniqueOrThrow(
-                {where:{
-                    email:userEmail,
-                }}
-            );
+            const user = await this.getUserByEmail(userEmail);
             if(user.remember_token !== token){
                 throw new Error('Token inválido');
             }
-            const argon2 = require('argon2');
-            const new_pass = await argon2.hash(dto.password);
+            const new_pass = await this.generateArgonPassword(dto.password);
             await this.dbService.user.update({
                 where:{id:user.id},
                 data:{password:new_pass, remember_token:null}
@@ -97,9 +82,7 @@ export class AuthService{
 
     async register(dto: UserRegisterDto) {
         try {
-
-            const argon2 = require('argon2');
-            const pass = await argon2.hash(dto.password);
+            const pass = await this.generateArgonPassword(dto.password);
             const username = await this.createUserName(dto.name, dto.last_name);
             const token = await this.signToken(dto.email);
             const newUser = await this.dbService.user.create({
@@ -134,28 +117,36 @@ export class AuthService{
         }
     }
 
-    async confirmEmail(token:string, userEmail:string){
+    async confirmEmail(token:string, user:User){
+        if(user.remember_token !== token){
+            throw new Error('Token inválido');
+        }
+        if(user.email_verified){
+            throw new Error('Ya ha validado su correo electrónico');
+        }
         try{
-            const user = await this.dbService.user.findUniqueOrThrow(
-                {where:{
-                    email:userEmail,
-                }}
-            );
-            if(user.remember_token !== token){
-                throw new Error('Token inválido');
-            }
             await this.dbService.user.update({
                 where:{id:user.id},
                 data:{remember_token:null, email_verified:true}
-            })
+            });
+            return {message:'Email confirmado', status:HttpStatus.OK};
         } catch(error) {
-            throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST)
+            throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST);
         }
-        return {message:'Email confirmado', status:HttpStatus.OK};
     }
 
-    async resendConfirm(){
-        // TODO need auth token
+    async resendConfirm(user : User){
+        try {
+            const token = await this.signToken(user.email);
+            await this.dbService.user.update({
+                where:{id:user.id},
+                data:{remember_token:token}
+            });
+            await this.mailService.sendConfirmEmail(user.email, user.name, token);
+            return {message:'Email reenviado', status:HttpStatus.OK}
+        } catch(error){
+            throw new HttpException({'message':[{'constrints':{'error':error}}]},HttpStatus.BAD_REQUEST);
+        }
     }
 
     private async createUserName(name: string, last_name: string) : Promise<string> {
@@ -167,5 +158,24 @@ export class AuthService{
                 WHERE username LIKE ${query};
             `;
         return usern.concat(users[0].count);
+    }
+
+    private async getUserByEmail(userEmail : string){
+        try{
+            const user = await this.dbService.user.findFirstOrThrow(
+                {where:{
+                    email:userEmail,
+                    AND:{deleted:false}
+                }}
+            );
+            return user;
+        } catch(error){
+            throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private async generateArgonPassword(plainPassword:string){
+        const argon2 = require('argon2');
+        return await argon2.hash(plainPassword);
     }
 }
