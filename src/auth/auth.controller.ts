@@ -1,6 +1,5 @@
 import { Body, Controller, Logger, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { User } from "@prisma/client";
-import { Request } from "express";
 import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { GetUser } from "./decorator/get-user.decorator";

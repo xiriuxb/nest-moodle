@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output = "./generated/nestClient"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int         @id @default(autoincrement())
+  name           String      @db.VarChar(64)
+  last_name      String      @db.VarChar(64)
+  email          String      @unique @db.VarChar(64)
+  email_verified Boolean     @default(false)
+  password       String      @db.VarChar(255)
+  country        String?     @db.VarChar(128)
+  region         String?     @db.VarChar(128)
+  username       String      @unique @db.VarChar(64)
+  birth_day      DateTime?   @db.Date
+  deleted        Boolean     @default(false)
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  remember_token String?
+  roles          Role[]
+  enrolments     Enrolment[]
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  roles      Role[]
+}
+
+model Course {
+  id         Int         @id @default(autoincrement())
+  moodle_id  Int         @unique
+  fullname   String      @db.VarChar(255)
+  shortname  String      @db.VarChar(128)
+  category   String      @db.VarChar(128)
+  destacado  Boolean     @default(false)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  enrolments Enrolment[]
+}
+
+model EnrolmentStatus {
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(128)
+  description String      @db.VarChar(256)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  enrolements Enrolment[]
+}
+
+model PaymentMethod {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(128)
+  label      String    @db.VarChar(128)
+  active     Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  payments   Payment[]
+}
+
+model Payment {
+  id                Int           @id @default(autoincrement())
+  amount            Float
+  currency          String        @db.VarChar(128)
+  payment_status    String        @db.VarChar(128)
+  payment_id        String        @db.VarChar(128)
+  payer_id          String        @db.VarChar(128)
+  payer_email       String        @db.VarChar(128)
+  payer_name        String        @db.VarChar(128)
+  transaction_id    String        @db.VarChar(128)
+  file              String        @db.VarChar(256)
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  payment_method_id Int
+  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id])
+  enrolments        Enrolment[]
+}
+
+model Enrolment {
+  id                  Int             @id @default(autoincrement())
+  username            String?         @db.VarChar(128)
+  curso_moodle_id     Int
+  description         String          @db.VarChar(256)
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  user_id             Int
+  user                User            @relation(fields: [user_id], references: [id])
+  enrolment_status_id Int
+  enrolment_status    EnrolmentStatus @relation(fields: [enrolment_status_id], references: [id])
+  payment_id          Int?
+  payment             Payment?        @relation(fields: [payment_id], references: [id])
+  course_id           Int
+  course              Course          @relation(fields: [course_id], references: [id])
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  autor      String   @db.VarChar(128)
+  updateb_by Int
+  text       String   @db.VarChar(256)
+  active     Boolean  @default(false)
+  file       String?  @db.VarChar(256)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+// model Comment {
+//   id Int @id @default(autoincrement())
+//   text String @db.VarChar(512)
+//   user_id Int
+//   user User @re
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+// }

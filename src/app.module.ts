@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { MdlCourseModule } from './mdl_courses/mdl_course.module';
+import { MoodleDatabaseModule } from './moodledb/mdl_database.module';
 import { UserModule } from './users/user.module';
 
 @Module({
@@ -13,7 +15,9 @@ import { UserModule } from './users/user.module';
     ConfigModule.forRoot({
       isGlobal:true,
     }),
-    AuthModule
+    AuthModule,
+    MdlCourseModule,
+    MoodleDatabaseModule
   ],
   controllers: [],
   providers: [],
