@@ -19,7 +19,7 @@ model mdl_course {
     timecreated   Int                    @db.Int
     category_name mdl_course_categories  @relation(fields: [category], references: [id])
     custom_data   mdl_customfield_data[]
-    contexts      mdl_context[]
+    context       mdl_context[]
 }
 
 model mdl_course_categories {
@@ -39,7 +39,7 @@ model mdl_context {
 
 model mdl_files {
     id        Int         @id
-    contextid  Int         @unique @db.Int
+    contextid Int         @unique @db.Int
     filename  String      @db.VarChar(255)
     component String      @db.VarChar(100)
     context   mdl_context @relation(fields: [contextid], references: [id])

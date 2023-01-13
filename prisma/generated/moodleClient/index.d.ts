@@ -915,12 +915,12 @@ export namespace Prisma {
 
   export type Mdl_courseCountOutputType = {
     custom_data: number
-    contexts: number
+    context: number
   }
 
   export type Mdl_courseCountOutputTypeSelect = {
     custom_data?: boolean
-    contexts?: boolean
+    context?: boolean
   }
 
   export type Mdl_courseCountOutputTypeGetPayload<S extends boolean | null | undefined | Mdl_courseCountOutputTypeArgs> =
@@ -1325,7 +1325,7 @@ export namespace Prisma {
     timecreated?: boolean
     category_name?: boolean | mdl_course_categoriesArgs
     custom_data?: boolean | mdl_customfield_dataFindManyArgs
-    contexts?: boolean | mdl_contextFindManyArgs
+    context?: boolean | mdl_contextFindManyArgs
     _count?: boolean | Mdl_courseCountOutputTypeArgs
   }
 
@@ -1333,7 +1333,7 @@ export namespace Prisma {
   export type mdl_courseInclude = {
     category_name?: boolean | mdl_course_categoriesArgs
     custom_data?: boolean | mdl_customfield_dataFindManyArgs
-    contexts?: boolean | mdl_contextFindManyArgs
+    context?: boolean | mdl_contextFindManyArgs
     _count?: boolean | Mdl_courseCountOutputTypeArgs
   } 
 
@@ -1346,7 +1346,7 @@ export namespace Prisma {
     [P in TruthyKeys<S['include']>]:
         P extends 'category_name' ? mdl_course_categoriesGetPayload<S['include'][P]> :
         P extends 'custom_data' ? Array < mdl_customfield_dataGetPayload<S['include'][P]>>  :
-        P extends 'contexts' ? Array < mdl_contextGetPayload<S['include'][P]>>  :
+        P extends 'context' ? Array < mdl_contextGetPayload<S['include'][P]>>  :
         P extends '_count' ? Mdl_courseCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (mdl_courseArgs | mdl_courseFindManyArgs)
@@ -1354,7 +1354,7 @@ export namespace Prisma {
     [P in TruthyKeys<S['select']>]:
         P extends 'category_name' ? mdl_course_categoriesGetPayload<S['select'][P]> :
         P extends 'custom_data' ? Array < mdl_customfield_dataGetPayload<S['select'][P]>>  :
-        P extends 'contexts' ? Array < mdl_contextGetPayload<S['select'][P]>>  :
+        P extends 'context' ? Array < mdl_contextGetPayload<S['select'][P]>>  :
         P extends '_count' ? Mdl_courseCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof mdl_course ? mdl_course[P] : never
   } 
       : mdl_course
@@ -1733,7 +1733,7 @@ export namespace Prisma {
 
     custom_data<T extends mdl_customfield_dataFindManyArgs= {}>(args?: Subset<T, mdl_customfield_dataFindManyArgs>): PrismaPromise<Array<mdl_customfield_dataGetPayload<T>>| Null>;
 
-    contexts<T extends mdl_contextFindManyArgs= {}>(args?: Subset<T, mdl_contextFindManyArgs>): PrismaPromise<Array<mdl_contextGetPayload<T>>| Null>;
+    context<T extends mdl_contextFindManyArgs= {}>(args?: Subset<T, mdl_contextFindManyArgs>): PrismaPromise<Array<mdl_contextGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -7353,7 +7353,7 @@ export namespace Prisma {
     timecreated?: IntFilter | number
     category_name?: XOR<Mdl_course_categoriesRelationFilter, mdl_course_categoriesWhereInput>
     custom_data?: Mdl_customfield_dataListRelationFilter
-    contexts?: Mdl_contextListRelationFilter
+    context?: Mdl_contextListRelationFilter
   }
 
   export type mdl_courseOrderByWithRelationInput = {
@@ -7366,7 +7366,7 @@ export namespace Prisma {
     timecreated?: SortOrder
     category_name?: mdl_course_categoriesOrderByWithRelationInput
     custom_data?: mdl_customfield_dataOrderByRelationAggregateInput
-    contexts?: mdl_contextOrderByRelationAggregateInput
+    context?: mdl_contextOrderByRelationAggregateInput
   }
 
   export type mdl_courseWhereUniqueInput = {
@@ -7628,7 +7628,7 @@ export namespace Prisma {
     timecreated: number
     category_name: mdl_course_categoriesCreateNestedOneWithoutCoursesInput
     custom_data?: mdl_customfield_dataCreateNestedManyWithoutCourseInput
-    contexts?: mdl_contextCreateNestedManyWithoutCourseInput
+    context?: mdl_contextCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseUncheckedCreateInput = {
@@ -7640,7 +7640,7 @@ export namespace Prisma {
     visible?: number
     timecreated: number
     custom_data?: mdl_customfield_dataUncheckedCreateNestedManyWithoutCourseInput
-    contexts?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
+    context?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseUpdateInput = {
@@ -7651,7 +7651,7 @@ export namespace Prisma {
     timecreated?: IntFieldUpdateOperationsInput | number
     category_name?: mdl_course_categoriesUpdateOneRequiredWithoutCoursesNestedInput
     custom_data?: mdl_customfield_dataUpdateManyWithoutCourseNestedInput
-    contexts?: mdl_contextUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_courseUncheckedUpdateInput = {
@@ -7663,7 +7663,7 @@ export namespace Prisma {
     visible?: IntFieldUpdateOperationsInput | number
     timecreated?: IntFieldUpdateOperationsInput | number
     custom_data?: mdl_customfield_dataUncheckedUpdateManyWithoutCourseNestedInput
-    contexts?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_courseCreateManyInput = {
@@ -7739,7 +7739,7 @@ export namespace Prisma {
 
   export type mdl_contextCreateInput = {
     contextlevel: number
-    course: mdl_courseCreateNestedOneWithoutContextsInput
+    course: mdl_courseCreateNestedOneWithoutContextInput
     files?: mdl_filesCreateNestedManyWithoutContextInput
   }
 
@@ -7752,7 +7752,7 @@ export namespace Prisma {
 
   export type mdl_contextUpdateInput = {
     contextlevel?: IntFieldUpdateOperationsInput | number
-    course?: mdl_courseUpdateOneRequiredWithoutContextsNestedInput
+    course?: mdl_courseUpdateOneRequiredWithoutContextNestedInput
     files?: mdl_filesUpdateManyWithoutContextNestedInput
   }
 
@@ -8382,9 +8382,9 @@ export namespace Prisma {
     deleteMany?: Enumerable<mdl_courseScalarWhereInput>
   }
 
-  export type mdl_courseCreateNestedOneWithoutContextsInput = {
-    create?: XOR<mdl_courseCreateWithoutContextsInput, mdl_courseUncheckedCreateWithoutContextsInput>
-    connectOrCreate?: mdl_courseCreateOrConnectWithoutContextsInput
+  export type mdl_courseCreateNestedOneWithoutContextInput = {
+    create?: XOR<mdl_courseCreateWithoutContextInput, mdl_courseUncheckedCreateWithoutContextInput>
+    connectOrCreate?: mdl_courseCreateOrConnectWithoutContextInput
     connect?: mdl_courseWhereUniqueInput
   }
 
@@ -8402,12 +8402,12 @@ export namespace Prisma {
     connect?: Enumerable<mdl_filesWhereUniqueInput>
   }
 
-  export type mdl_courseUpdateOneRequiredWithoutContextsNestedInput = {
-    create?: XOR<mdl_courseCreateWithoutContextsInput, mdl_courseUncheckedCreateWithoutContextsInput>
-    connectOrCreate?: mdl_courseCreateOrConnectWithoutContextsInput
-    upsert?: mdl_courseUpsertWithoutContextsInput
+  export type mdl_courseUpdateOneRequiredWithoutContextNestedInput = {
+    create?: XOR<mdl_courseCreateWithoutContextInput, mdl_courseUncheckedCreateWithoutContextInput>
+    connectOrCreate?: mdl_courseCreateOrConnectWithoutContextInput
+    upsert?: mdl_courseUpsertWithoutContextInput
     connect?: mdl_courseWhereUniqueInput
-    update?: XOR<mdl_courseUpdateWithoutContextsInput, mdl_courseUncheckedUpdateWithoutContextsInput>
+    update?: XOR<mdl_courseUpdateWithoutContextInput, mdl_courseUncheckedUpdateWithoutContextInput>
   }
 
   export type mdl_filesUpdateManyWithoutContextNestedInput = {
@@ -8705,7 +8705,7 @@ export namespace Prisma {
 
   export type mdl_contextUpdateManyWithWhereWithoutCourseInput = {
     where: mdl_contextScalarWhereInput
-    data: XOR<mdl_contextUpdateManyMutationInput, mdl_contextUncheckedUpdateManyWithoutContextsInput>
+    data: XOR<mdl_contextUpdateManyMutationInput, mdl_contextUncheckedUpdateManyWithoutContextInput>
   }
 
   export type mdl_contextScalarWhereInput = {
@@ -8724,7 +8724,7 @@ export namespace Prisma {
     visible?: number
     timecreated: number
     custom_data?: mdl_customfield_dataCreateNestedManyWithoutCourseInput
-    contexts?: mdl_contextCreateNestedManyWithoutCourseInput
+    context?: mdl_contextCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseUncheckedCreateWithoutCategory_nameInput = {
@@ -8735,7 +8735,7 @@ export namespace Prisma {
     visible?: number
     timecreated: number
     custom_data?: mdl_customfield_dataUncheckedCreateNestedManyWithoutCourseInput
-    contexts?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
+    context?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseCreateOrConnectWithoutCategory_nameInput = {
@@ -8777,7 +8777,7 @@ export namespace Prisma {
     timecreated?: IntFilter | number
   }
 
-  export type mdl_courseCreateWithoutContextsInput = {
+  export type mdl_courseCreateWithoutContextInput = {
     fullname: string
     shortname: string
     summary: string
@@ -8787,7 +8787,7 @@ export namespace Prisma {
     custom_data?: mdl_customfield_dataCreateNestedManyWithoutCourseInput
   }
 
-  export type mdl_courseUncheckedCreateWithoutContextsInput = {
+  export type mdl_courseUncheckedCreateWithoutContextInput = {
     id?: number
     category: number
     fullname: string
@@ -8798,9 +8798,9 @@ export namespace Prisma {
     custom_data?: mdl_customfield_dataUncheckedCreateNestedManyWithoutCourseInput
   }
 
-  export type mdl_courseCreateOrConnectWithoutContextsInput = {
+  export type mdl_courseCreateOrConnectWithoutContextInput = {
     where: mdl_courseWhereUniqueInput
-    create: XOR<mdl_courseCreateWithoutContextsInput, mdl_courseUncheckedCreateWithoutContextsInput>
+    create: XOR<mdl_courseCreateWithoutContextInput, mdl_courseUncheckedCreateWithoutContextInput>
   }
 
   export type mdl_filesCreateWithoutContextInput = {
@@ -8825,12 +8825,12 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type mdl_courseUpsertWithoutContextsInput = {
-    update: XOR<mdl_courseUpdateWithoutContextsInput, mdl_courseUncheckedUpdateWithoutContextsInput>
-    create: XOR<mdl_courseCreateWithoutContextsInput, mdl_courseUncheckedCreateWithoutContextsInput>
+  export type mdl_courseUpsertWithoutContextInput = {
+    update: XOR<mdl_courseUpdateWithoutContextInput, mdl_courseUncheckedUpdateWithoutContextInput>
+    create: XOR<mdl_courseCreateWithoutContextInput, mdl_courseUncheckedCreateWithoutContextInput>
   }
 
-  export type mdl_courseUpdateWithoutContextsInput = {
+  export type mdl_courseUpdateWithoutContextInput = {
     fullname?: StringFieldUpdateOperationsInput | string
     shortname?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -8840,7 +8840,7 @@ export namespace Prisma {
     custom_data?: mdl_customfield_dataUpdateManyWithoutCourseNestedInput
   }
 
-  export type mdl_courseUncheckedUpdateWithoutContextsInput = {
+  export type mdl_courseUncheckedUpdateWithoutContextInput = {
     id?: IntFieldUpdateOperationsInput | number
     category?: IntFieldUpdateOperationsInput | number
     fullname?: StringFieldUpdateOperationsInput | string
@@ -8879,7 +8879,7 @@ export namespace Prisma {
 
   export type mdl_contextCreateWithoutFilesInput = {
     contextlevel: number
-    course: mdl_courseCreateNestedOneWithoutContextsInput
+    course: mdl_courseCreateNestedOneWithoutContextInput
   }
 
   export type mdl_contextUncheckedCreateWithoutFilesInput = {
@@ -8900,7 +8900,7 @@ export namespace Prisma {
 
   export type mdl_contextUpdateWithoutFilesInput = {
     contextlevel?: IntFieldUpdateOperationsInput | number
-    course?: mdl_courseUpdateOneRequiredWithoutContextsNestedInput
+    course?: mdl_courseUpdateOneRequiredWithoutContextNestedInput
   }
 
   export type mdl_contextUncheckedUpdateWithoutFilesInput = {
@@ -8933,7 +8933,7 @@ export namespace Prisma {
     visible?: number
     timecreated: number
     category_name: mdl_course_categoriesCreateNestedOneWithoutCoursesInput
-    contexts?: mdl_contextCreateNestedManyWithoutCourseInput
+    context?: mdl_contextCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseUncheckedCreateWithoutCustom_dataInput = {
@@ -8944,7 +8944,7 @@ export namespace Prisma {
     summary: string
     visible?: number
     timecreated: number
-    contexts?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
+    context?: mdl_contextUncheckedCreateNestedManyWithoutCourseInput
   }
 
   export type mdl_courseCreateOrConnectWithoutCustom_dataInput = {
@@ -8981,7 +8981,7 @@ export namespace Prisma {
     visible?: IntFieldUpdateOperationsInput | number
     timecreated?: IntFieldUpdateOperationsInput | number
     category_name?: mdl_course_categoriesUpdateOneRequiredWithoutCoursesNestedInput
-    contexts?: mdl_contextUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_courseUncheckedUpdateWithoutCustom_dataInput = {
@@ -8992,7 +8992,7 @@ export namespace Prisma {
     summary?: StringFieldUpdateOperationsInput | string
     visible?: IntFieldUpdateOperationsInput | number
     timecreated?: IntFieldUpdateOperationsInput | number
-    contexts?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_customfield_dataCreateWithoutField_nameInput = {
@@ -9073,7 +9073,7 @@ export namespace Prisma {
     files?: mdl_filesUncheckedUpdateManyWithoutContextNestedInput
   }
 
-  export type mdl_contextUncheckedUpdateManyWithoutContextsInput = {
+  export type mdl_contextUncheckedUpdateManyWithoutContextInput = {
     id?: IntFieldUpdateOperationsInput | number
     contextlevel?: IntFieldUpdateOperationsInput | number
   }
@@ -9094,7 +9094,7 @@ export namespace Prisma {
     visible?: IntFieldUpdateOperationsInput | number
     timecreated?: IntFieldUpdateOperationsInput | number
     custom_data?: mdl_customfield_dataUpdateManyWithoutCourseNestedInput
-    contexts?: mdl_contextUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_courseUncheckedUpdateWithoutCategory_nameInput = {
@@ -9105,7 +9105,7 @@ export namespace Prisma {
     visible?: IntFieldUpdateOperationsInput | number
     timecreated?: IntFieldUpdateOperationsInput | number
     custom_data?: mdl_customfield_dataUncheckedUpdateManyWithoutCourseNestedInput
-    contexts?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
+    context?: mdl_contextUncheckedUpdateManyWithoutCourseNestedInput
   }
 
   export type mdl_courseUncheckedUpdateManyWithoutCoursesInput = {
