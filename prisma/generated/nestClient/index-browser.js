@@ -168,7 +168,7 @@ exports.Prisma.SortOrder = makeEnum({
 exports.Prisma.TestimonialScalarFieldEnum = makeEnum({
   id: 'id',
   autor: 'autor',
-  updateb_by: 'updateb_by',
+  updated_by: 'updated_by',
   text: 'text',
   active: 'active',
   file: 'file',

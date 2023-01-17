@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { MdlCourseModule } from './mdl_courses/mdl_course.module';
 import { MoodleDatabaseModule } from './moodledb/mdl_database.module';
+import { TestimonialModule } from './testimonials/testimonial.module';
 import { UserModule } from './users/user.module';
 
 @Module({
@@ -17,7 +18,8 @@ import { UserModule } from './users/user.module';
     }),
     AuthModule,
     MdlCourseModule,
-    MoodleDatabaseModule
+    MoodleDatabaseModule,
+    TestimonialModule
   ],
   controllers: [],
   providers: [],

@@ -116,7 +116,7 @@ model Enrolment {
 model Testimonial {
   id         Int      @id @default(autoincrement())
   autor      String   @db.VarChar(128)
-  updateb_by Int
+  updated_by Int
   text       String   @db.VarChar(256)
   active     Boolean  @default(false)
   file       String?  @db.VarChar(256)

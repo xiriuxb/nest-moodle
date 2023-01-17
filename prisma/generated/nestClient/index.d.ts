@@ -139,7 +139,7 @@ export type Enrolment = {
 export type Testimonial = {
   id: number
   autor: string
-  updateb_by: number
+  updated_by: number
   text: string
   active: boolean
   file: string | null
@@ -9805,18 +9805,18 @@ export namespace Prisma {
 
   export type TestimonialAvgAggregateOutputType = {
     id: number | null
-    updateb_by: number | null
+    updated_by: number | null
   }
 
   export type TestimonialSumAggregateOutputType = {
     id: number | null
-    updateb_by: number | null
+    updated_by: number | null
   }
 
   export type TestimonialMinAggregateOutputType = {
     id: number | null
     autor: string | null
-    updateb_by: number | null
+    updated_by: number | null
     text: string | null
     active: boolean | null
     file: string | null
@@ -9827,7 +9827,7 @@ export namespace Prisma {
   export type TestimonialMaxAggregateOutputType = {
     id: number | null
     autor: string | null
-    updateb_by: number | null
+    updated_by: number | null
     text: string | null
     active: boolean | null
     file: string | null
@@ -9838,7 +9838,7 @@ export namespace Prisma {
   export type TestimonialCountAggregateOutputType = {
     id: number
     autor: number
-    updateb_by: number
+    updated_by: number
     text: number
     active: number
     file: number
@@ -9850,18 +9850,18 @@ export namespace Prisma {
 
   export type TestimonialAvgAggregateInputType = {
     id?: true
-    updateb_by?: true
+    updated_by?: true
   }
 
   export type TestimonialSumAggregateInputType = {
     id?: true
-    updateb_by?: true
+    updated_by?: true
   }
 
   export type TestimonialMinAggregateInputType = {
     id?: true
     autor?: true
-    updateb_by?: true
+    updated_by?: true
     text?: true
     active?: true
     file?: true
@@ -9872,7 +9872,7 @@ export namespace Prisma {
   export type TestimonialMaxAggregateInputType = {
     id?: true
     autor?: true
-    updateb_by?: true
+    updated_by?: true
     text?: true
     active?: true
     file?: true
@@ -9883,7 +9883,7 @@ export namespace Prisma {
   export type TestimonialCountAggregateInputType = {
     id?: true
     autor?: true
-    updateb_by?: true
+    updated_by?: true
     text?: true
     active?: true
     file?: true
@@ -9987,7 +9987,7 @@ export namespace Prisma {
   export type TestimonialGroupByOutputType = {
     id: number
     autor: string
-    updateb_by: number
+    updated_by: number
     text: string
     active: boolean
     file: string | null
@@ -10017,7 +10017,7 @@ export namespace Prisma {
   export type TestimonialSelect = {
     id?: boolean
     autor?: boolean
-    updateb_by?: boolean
+    updated_by?: boolean
     text?: boolean
     active?: boolean
     file?: boolean
@@ -10891,7 +10891,7 @@ export namespace Prisma {
   export const TestimonialScalarFieldEnum: {
     id: 'id',
     autor: 'autor',
-    updateb_by: 'updateb_by',
+    updated_by: 'updated_by',
     text: 'text',
     active: 'active',
     file: 'file',
@@ -11446,7 +11446,7 @@ export namespace Prisma {
     NOT?: Enumerable<TestimonialWhereInput>
     id?: IntFilter | number
     autor?: StringFilter | string
-    updateb_by?: IntFilter | number
+    updated_by?: IntFilter | number
     text?: StringFilter | string
     active?: BoolFilter | boolean
     file?: StringNullableFilter | string | null
@@ -11457,7 +11457,7 @@ export namespace Prisma {
   export type TestimonialOrderByWithRelationInput = {
     id?: SortOrder
     autor?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
     text?: SortOrder
     active?: SortOrder
     file?: SortOrder
@@ -11472,7 +11472,7 @@ export namespace Prisma {
   export type TestimonialOrderByWithAggregationInput = {
     id?: SortOrder
     autor?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
     text?: SortOrder
     active?: SortOrder
     file?: SortOrder
@@ -11491,7 +11491,7 @@ export namespace Prisma {
     NOT?: Enumerable<TestimonialScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     autor?: StringWithAggregatesFilter | string
-    updateb_by?: IntWithAggregatesFilter | number
+    updated_by?: IntWithAggregatesFilter | number
     text?: StringWithAggregatesFilter | string
     active?: BoolWithAggregatesFilter | boolean
     file?: StringNullableWithAggregatesFilter | string | null
@@ -12124,7 +12124,7 @@ export namespace Prisma {
 
   export type TestimonialCreateInput = {
     autor: string
-    updateb_by: number
+    updated_by: number
     text: string
     active?: boolean
     file?: string | null
@@ -12135,7 +12135,7 @@ export namespace Prisma {
   export type TestimonialUncheckedCreateInput = {
     id?: number
     autor: string
-    updateb_by: number
+    updated_by: number
     text: string
     active?: boolean
     file?: string | null
@@ -12145,7 +12145,7 @@ export namespace Prisma {
 
   export type TestimonialUpdateInput = {
     autor?: StringFieldUpdateOperationsInput | string
-    updateb_by?: IntFieldUpdateOperationsInput | number
+    updated_by?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     file?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12156,7 +12156,7 @@ export namespace Prisma {
   export type TestimonialUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     autor?: StringFieldUpdateOperationsInput | string
-    updateb_by?: IntFieldUpdateOperationsInput | number
+    updated_by?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     file?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12167,7 +12167,7 @@ export namespace Prisma {
   export type TestimonialCreateManyInput = {
     id?: number
     autor: string
-    updateb_by: number
+    updated_by: number
     text: string
     active?: boolean
     file?: string | null
@@ -12177,7 +12177,7 @@ export namespace Prisma {
 
   export type TestimonialUpdateManyMutationInput = {
     autor?: StringFieldUpdateOperationsInput | string
-    updateb_by?: IntFieldUpdateOperationsInput | number
+    updated_by?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     file?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12188,7 +12188,7 @@ export namespace Prisma {
   export type TestimonialUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     autor?: StringFieldUpdateOperationsInput | string
-    updateb_by?: IntFieldUpdateOperationsInput | number
+    updated_by?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     file?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12824,7 +12824,7 @@ export namespace Prisma {
   export type TestimonialCountOrderByAggregateInput = {
     id?: SortOrder
     autor?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
     text?: SortOrder
     active?: SortOrder
     file?: SortOrder
@@ -12834,13 +12834,13 @@ export namespace Prisma {
 
   export type TestimonialAvgOrderByAggregateInput = {
     id?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type TestimonialMaxOrderByAggregateInput = {
     id?: SortOrder
     autor?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
     text?: SortOrder
     active?: SortOrder
     file?: SortOrder
@@ -12851,7 +12851,7 @@ export namespace Prisma {
   export type TestimonialMinOrderByAggregateInput = {
     id?: SortOrder
     autor?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
     text?: SortOrder
     active?: SortOrder
     file?: SortOrder
@@ -12861,7 +12861,7 @@ export namespace Prisma {
 
   export type TestimonialSumOrderByAggregateInput = {
     id?: SortOrder
-    updateb_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type RoleCreateNestedManyWithoutUsersInput = {
