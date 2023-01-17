@@ -66,6 +66,8 @@ export type mdl_customfield_data = {
   instanceid: number
   fieldid: number
   value: string
+  valueformat: number
+  charvalue: string
 }
 
 /**
@@ -5229,12 +5231,14 @@ export namespace Prisma {
     id: number | null
     instanceid: number | null
     fieldid: number | null
+    valueformat: number | null
   }
 
   export type Mdl_customfield_dataSumAggregateOutputType = {
     id: number | null
     instanceid: number | null
     fieldid: number | null
+    valueformat: number | null
   }
 
   export type Mdl_customfield_dataMinAggregateOutputType = {
@@ -5242,6 +5246,8 @@ export namespace Prisma {
     instanceid: number | null
     fieldid: number | null
     value: string | null
+    valueformat: number | null
+    charvalue: string | null
   }
 
   export type Mdl_customfield_dataMaxAggregateOutputType = {
@@ -5249,6 +5255,8 @@ export namespace Prisma {
     instanceid: number | null
     fieldid: number | null
     value: string | null
+    valueformat: number | null
+    charvalue: string | null
   }
 
   export type Mdl_customfield_dataCountAggregateOutputType = {
@@ -5256,6 +5264,8 @@ export namespace Prisma {
     instanceid: number
     fieldid: number
     value: number
+    valueformat: number
+    charvalue: number
     _all: number
   }
 
@@ -5264,12 +5274,14 @@ export namespace Prisma {
     id?: true
     instanceid?: true
     fieldid?: true
+    valueformat?: true
   }
 
   export type Mdl_customfield_dataSumAggregateInputType = {
     id?: true
     instanceid?: true
     fieldid?: true
+    valueformat?: true
   }
 
   export type Mdl_customfield_dataMinAggregateInputType = {
@@ -5277,6 +5289,8 @@ export namespace Prisma {
     instanceid?: true
     fieldid?: true
     value?: true
+    valueformat?: true
+    charvalue?: true
   }
 
   export type Mdl_customfield_dataMaxAggregateInputType = {
@@ -5284,6 +5298,8 @@ export namespace Prisma {
     instanceid?: true
     fieldid?: true
     value?: true
+    valueformat?: true
+    charvalue?: true
   }
 
   export type Mdl_customfield_dataCountAggregateInputType = {
@@ -5291,6 +5307,8 @@ export namespace Prisma {
     instanceid?: true
     fieldid?: true
     value?: true
+    valueformat?: true
+    charvalue?: true
     _all?: true
   }
 
@@ -5391,6 +5409,8 @@ export namespace Prisma {
     instanceid: number
     fieldid: number
     value: string
+    valueformat: number
+    charvalue: string
     _count: Mdl_customfield_dataCountAggregateOutputType | null
     _avg: Mdl_customfield_dataAvgAggregateOutputType | null
     _sum: Mdl_customfield_dataSumAggregateOutputType | null
@@ -5417,6 +5437,8 @@ export namespace Prisma {
     instanceid?: boolean
     fieldid?: boolean
     value?: boolean
+    valueformat?: boolean
+    charvalue?: boolean
     field_name?: boolean | mdl_customfield_fieldArgs
     course?: boolean | mdl_courseArgs
   }
@@ -7292,7 +7314,9 @@ export namespace Prisma {
     id: 'id',
     instanceid: 'instanceid',
     fieldid: 'fieldid',
-    value: 'value'
+    value: 'value',
+    valueformat: 'valueformat',
+    charvalue: 'charvalue'
   };
 
   export type Mdl_customfield_dataScalarFieldEnum = (typeof Mdl_customfield_dataScalarFieldEnum)[keyof typeof Mdl_customfield_dataScalarFieldEnum]
@@ -7539,6 +7563,8 @@ export namespace Prisma {
     instanceid?: IntFilter | number
     fieldid?: IntFilter | number
     value?: StringFilter | string
+    valueformat?: IntFilter | number
+    charvalue?: StringFilter | string
     field_name?: XOR<Mdl_customfield_fieldRelationFilter, mdl_customfield_fieldWhereInput>
     course?: XOR<Mdl_courseRelationFilter, mdl_courseWhereInput>
   }
@@ -7548,6 +7574,8 @@ export namespace Prisma {
     instanceid?: SortOrder
     fieldid?: SortOrder
     value?: SortOrder
+    valueformat?: SortOrder
+    charvalue?: SortOrder
     field_name?: mdl_customfield_fieldOrderByWithRelationInput
     course?: mdl_courseOrderByWithRelationInput
   }
@@ -7562,6 +7590,8 @@ export namespace Prisma {
     instanceid?: SortOrder
     fieldid?: SortOrder
     value?: SortOrder
+    valueformat?: SortOrder
+    charvalue?: SortOrder
     _count?: mdl_customfield_dataCountOrderByAggregateInput
     _avg?: mdl_customfield_dataAvgOrderByAggregateInput
     _max?: mdl_customfield_dataMaxOrderByAggregateInput
@@ -7577,6 +7607,8 @@ export namespace Prisma {
     instanceid?: IntWithAggregatesFilter | number
     fieldid?: IntWithAggregatesFilter | number
     value?: StringWithAggregatesFilter | string
+    valueformat?: IntWithAggregatesFilter | number
+    charvalue?: StringWithAggregatesFilter | string
   }
 
   export type mdl_customfield_fieldWhereInput = {
@@ -7830,6 +7862,8 @@ export namespace Prisma {
   export type mdl_customfield_dataCreateInput = {
     id: number
     value: string
+    valueformat: number
+    charvalue: string
     field_name: mdl_customfield_fieldCreateNestedOneWithoutDatasInput
     course: mdl_courseCreateNestedOneWithoutCustom_dataInput
   }
@@ -7839,11 +7873,15 @@ export namespace Prisma {
     instanceid: number
     fieldid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_customfield_dataUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
     field_name?: mdl_customfield_fieldUpdateOneRequiredWithoutDatasNestedInput
     course?: mdl_courseUpdateOneRequiredWithoutCustom_dataNestedInput
   }
@@ -7853,6 +7891,8 @@ export namespace Prisma {
     instanceid?: IntFieldUpdateOperationsInput | number
     fieldid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_customfield_dataCreateManyInput = {
@@ -7860,11 +7900,15 @@ export namespace Prisma {
     instanceid: number
     fieldid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_customfield_dataUpdateManyMutationInput = {
     id?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_customfield_dataUncheckedUpdateManyInput = {
@@ -7872,6 +7916,8 @@ export namespace Prisma {
     instanceid?: IntFieldUpdateOperationsInput | number
     fieldid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_customfield_fieldCreateInput = {
@@ -8176,12 +8222,15 @@ export namespace Prisma {
     instanceid?: SortOrder
     fieldid?: SortOrder
     value?: SortOrder
+    valueformat?: SortOrder
+    charvalue?: SortOrder
   }
 
   export type mdl_customfield_dataAvgOrderByAggregateInput = {
     id?: SortOrder
     instanceid?: SortOrder
     fieldid?: SortOrder
+    valueformat?: SortOrder
   }
 
   export type mdl_customfield_dataMaxOrderByAggregateInput = {
@@ -8189,6 +8238,8 @@ export namespace Prisma {
     instanceid?: SortOrder
     fieldid?: SortOrder
     value?: SortOrder
+    valueformat?: SortOrder
+    charvalue?: SortOrder
   }
 
   export type mdl_customfield_dataMinOrderByAggregateInput = {
@@ -8196,12 +8247,15 @@ export namespace Prisma {
     instanceid?: SortOrder
     fieldid?: SortOrder
     value?: SortOrder
+    valueformat?: SortOrder
+    charvalue?: SortOrder
   }
 
   export type mdl_customfield_dataSumOrderByAggregateInput = {
     id?: SortOrder
     instanceid?: SortOrder
     fieldid?: SortOrder
+    valueformat?: SortOrder
   }
 
   export type mdl_customfield_fieldCountOrderByAggregateInput = {
@@ -8610,6 +8664,8 @@ export namespace Prisma {
   export type mdl_customfield_dataCreateWithoutCourseInput = {
     id: number
     value: string
+    valueformat: number
+    charvalue: string
     field_name: mdl_customfield_fieldCreateNestedOneWithoutDatasInput
   }
 
@@ -8617,6 +8673,8 @@ export namespace Prisma {
     id: number
     fieldid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_customfield_dataCreateOrConnectWithoutCourseInput = {
@@ -8690,6 +8748,8 @@ export namespace Prisma {
     instanceid?: IntFilter | number
     fieldid?: IntFilter | number
     value?: StringFilter | string
+    valueformat?: IntFilter | number
+    charvalue?: StringFilter | string
   }
 
   export type mdl_contextUpsertWithWhereUniqueWithoutCourseInput = {
@@ -8998,6 +9058,8 @@ export namespace Prisma {
   export type mdl_customfield_dataCreateWithoutField_nameInput = {
     id: number
     value: string
+    valueformat: number
+    charvalue: string
     course: mdl_courseCreateNestedOneWithoutCustom_dataInput
   }
 
@@ -9005,6 +9067,8 @@ export namespace Prisma {
     id: number
     instanceid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_customfield_dataCreateOrConnectWithoutField_nameInput = {
@@ -9037,6 +9101,8 @@ export namespace Prisma {
     id: number
     fieldid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_contextCreateManyCourseInput = {
@@ -9047,6 +9113,8 @@ export namespace Prisma {
   export type mdl_customfield_dataUpdateWithoutCourseInput = {
     id?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
     field_name?: mdl_customfield_fieldUpdateOneRequiredWithoutDatasNestedInput
   }
 
@@ -9054,12 +9122,16 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     fieldid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_customfield_dataUncheckedUpdateManyWithoutCustom_dataInput = {
     id?: IntFieldUpdateOperationsInput | number
     fieldid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_contextUpdateWithoutCourseInput = {
@@ -9145,11 +9217,15 @@ export namespace Prisma {
     id: number
     instanceid: number
     value: string
+    valueformat: number
+    charvalue: string
   }
 
   export type mdl_customfield_dataUpdateWithoutField_nameInput = {
     id?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
     course?: mdl_courseUpdateOneRequiredWithoutCustom_dataNestedInput
   }
 
@@ -9157,12 +9233,16 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     instanceid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
   export type mdl_customfield_dataUncheckedUpdateManyWithoutDatasInput = {
     id?: IntFieldUpdateOperationsInput | number
     instanceid?: IntFieldUpdateOperationsInput | number
     value?: StringFieldUpdateOperationsInput | string
+    valueformat?: IntFieldUpdateOperationsInput | number
+    charvalue?: StringFieldUpdateOperationsInput | string
   }
 
 

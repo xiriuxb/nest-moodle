@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
+import { Controller, DefaultValuePipe, Get, Logger, Param, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
 import { GetAllMdlCoursesDTO } from "./mdl_course.dto";
 import { MdlCourseService } from "./mdl_course.service";
 
@@ -8,16 +8,16 @@ export class MdlCourseController {
         private mdlCourseService: MdlCourseService
     ) { }
 
-    @Get('all')
+    @Get(':category?')
     xD(
+        @Param('category', new DefaultValuePipe(undefined)) category:string,
         @Query(new ValidationPipe({
             transform:true,
             transformOptions: {enableImplicitConversion: true},
 			forbidNonWhitelisted: true
         })) dto: GetAllMdlCoursesDTO,
     ) {
-        Logger.log(dto);
-        return this.mdlCourseService.getCourses(dto.page, dto.take);
+        return this.mdlCourseService.getCourses(dto.page, dto.take, category);
     }
 
     @Get('categories')

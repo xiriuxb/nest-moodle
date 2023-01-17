@@ -46,12 +46,14 @@ model mdl_files {
 }
 
 model mdl_customfield_data {
-    id         Int                   @id
-    instanceid Int                   @db.Int
-    fieldid    Int                   @unique @db.Int
-    value      String                @db.LongText
-    field_name mdl_customfield_field @relation(fields: [fieldid], references: [id])
-    course     mdl_course            @relation(fields: [instanceid], references: [id])
+    id          Int                   @id
+    instanceid  Int                   @db.Int
+    fieldid     Int                   @unique @db.Int
+    value       String                @db.LongText
+    valueformat Int                   @db.Int
+    charvalue   String                @db.VarChar(1333)
+    field_name  mdl_customfield_field @relation(fields: [fieldid], references: [id])
+    course      mdl_course            @relation(fields: [instanceid], references: [id])
 }
 
 model mdl_customfield_field {

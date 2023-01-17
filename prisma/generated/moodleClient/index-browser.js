@@ -115,7 +115,9 @@ exports.Prisma.Mdl_customfield_dataScalarFieldEnum = makeEnum({
   id: 'id',
   instanceid: 'instanceid',
   fieldid: 'fieldid',
-  value: 'value'
+  value: 'value',
+  valueformat: 'valueformat',
+  charvalue: 'charvalue'
 });
 
 exports.Prisma.Mdl_customfield_fieldScalarFieldEnum = makeEnum({
