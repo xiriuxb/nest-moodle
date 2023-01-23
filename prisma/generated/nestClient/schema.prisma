@@ -16,13 +16,13 @@ model User {
   name           String      @db.VarChar(64)
   last_name      String      @db.VarChar(64)
   email          String      @unique @db.VarChar(64)
-  email_verified Boolean     @default(false)
+  email_verified Int   @default(0) @db.TinyInt
   password       String      @db.VarChar(255)
   country        String?     @db.VarChar(128)
   region         String?     @db.VarChar(128)
   username       String      @unique @db.VarChar(64)
   birth_day      DateTime?   @db.Date
-  deleted        Boolean     @default(false)
+  deleted        Int   @default(0) @db.TinyInt
   created_at     DateTime    @default(now())
   updated_at     DateTime    @updatedAt
   remember_token String?
@@ -32,7 +32,8 @@ model User {
 
 model Role {
   id          Int          @id @default(autoincrement())
-  name        String
+  name        String       @unique
+  active Int @default(1) @db.TinyInt
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
   permissions Permission[]
@@ -53,7 +54,7 @@ model Course {
   fullname   String      @db.VarChar(255)
   shortname  String      @db.VarChar(128)
   category   String      @db.VarChar(128)
-  destacado  Boolean     @default(false)
+  destacado  Int   @default(0) @db.TinyInt
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
   enrolments Enrolment[]
@@ -72,7 +73,7 @@ model PaymentMethod {
   id         Int       @id @default(autoincrement())
   name       String    @db.VarChar(128)
   label      String    @db.VarChar(128)
-  active     Boolean   @default(false)
+  active     Int   @default(0) @db.TinyInt
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   payments   Payment[]
@@ -118,7 +119,7 @@ model Testimonial {
   autor      String   @db.VarChar(128)
   updated_by Int
   text       String   @db.VarChar(256)
-  active     Boolean  @default(false)
+  active     Int  @default(0) @db.TinyInt
   file       String?  @db.VarChar(256)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

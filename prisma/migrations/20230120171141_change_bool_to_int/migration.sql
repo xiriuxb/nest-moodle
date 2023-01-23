@@ -1,0 +1,14 @@
+-- AlterTable
+ALTER TABLE `Course` MODIFY `destacado` TINYINT NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `PaymentMethod` MODIFY `active` TINYINT NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `Role` MODIFY `active` TINYINT NOT NULL DEFAULT 1;
+
+-- AlterTable
+ALTER TABLE `Testimonial` MODIFY `active` TINYINT NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `User` MODIFY `deleted` TINYINT NOT NULL DEFAULT 0;

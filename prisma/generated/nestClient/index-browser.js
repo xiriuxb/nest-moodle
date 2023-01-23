@@ -156,6 +156,7 @@ exports.Prisma.PermissionScalarFieldEnum = makeEnum({
 exports.Prisma.RoleScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
+  active: 'active',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });

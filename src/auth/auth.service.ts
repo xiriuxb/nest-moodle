@@ -92,7 +92,8 @@ export class AuthService{
                     password: pass,
                     email: dto.email,
                     username: username,
-                    remember_token: token
+                    remember_token: token,
+                    roles:{connect:[{name:'user'}]}
                 },
                 select: {
                     name: true,
@@ -112,7 +113,7 @@ export class AuthService{
                     throw new HttpException('Error', HttpStatus.BAD_REQUEST, { cause: new Error('') });
                 }
             } else {
-                throw new HttpException('error', HttpStatus.BAD_REQUEST, { cause: new Error('') });
+                throw new HttpException(error, HttpStatus.BAD_REQUEST, { cause: new Error('') });
             }
         }
     }
@@ -127,7 +128,7 @@ export class AuthService{
         try{
             await this.dbService.user.update({
                 where:{id:user.id},
-                data:{remember_token:null, email_verified:true}
+                data:{remember_token:null, email_verified:1}
             });
             return {message:'Email confirmado', status:HttpStatus.OK};
         } catch(error) {
@@ -165,7 +166,7 @@ export class AuthService{
             const user = await this.dbService.user.findFirstOrThrow(
                 {where:{
                     email:userEmail,
-                    AND:{deleted:false}
+                    AND:{deleted:0}
                 }}
             );
             return user;

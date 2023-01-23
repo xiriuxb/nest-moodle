@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { RolesModule } from './admin/roles/role.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -19,7 +20,8 @@ import { UserModule } from './users/user.module';
     AuthModule,
     MdlCourseModule,
     MoodleDatabaseModule,
-    TestimonialModule
+    TestimonialModule,
+    RolesModule
   ],
   controllers: [],
   providers: [],

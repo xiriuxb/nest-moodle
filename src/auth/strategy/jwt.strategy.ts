@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { User } from "@prisma/client";
 import { ExtractJwt, Strategy } from "passport-jwt";
+import { User } from "prisma/generated/nestClient";
 import { DatabaseService } from "src/database/database.service";
 
 @Injectable()
@@ -15,15 +15,20 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt_query') {
         })
     }
 
-    async validate(payload:{userEmail:string}):Promise<User>{
+    async validate(payload:{userEmail:string}):Promise<any>{
         try{
             const user = await this.dbService.user.findFirstOrThrow(
                 {where:{
                     email:payload.userEmail,
-                    AND:{deleted:false}
+                    AND:{deleted:0}
+                },
+                select:{
+                    id:true,
+                    email:true,
+                    deleted:true,
+                    roles:true
                 }}
             );
-            delete user.password;
             return user;
         } catch(error){
             throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST);

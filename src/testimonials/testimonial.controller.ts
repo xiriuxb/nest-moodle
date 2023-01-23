@@ -4,6 +4,7 @@ import { TestimonialService } from "./testimonial.service";
 import { JwtGuardBearer } from "../auth/guards/jwt_bearer.guard";
 import { GetUser } from "../auth/decorator/get-user.decorator";
 import { User } from "@prisma/client";
+import { RoleGuard } from "src/auth/guards/roles.guard";
 
 @Controller('testimonials')
 export class TestimonialController{
@@ -25,7 +26,7 @@ export class TestimonialController{
     }
 
     @Post('create')
-    @UseGuards(JwtGuardBearer)
+    @UseGuards(JwtGuardBearer, RoleGuard(['admin']))
     createnewTestimonial(
         @Body() dto:CreateTestimoniallDTO,
         @GetUser() user:User

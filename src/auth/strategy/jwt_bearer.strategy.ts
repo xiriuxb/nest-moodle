@@ -15,15 +15,18 @@ export class JwtStrategyBearer extends PassportStrategy(Strategy,'jwt_bearer') {
     }
 
     async validate(payload:{email:string}){
-        Logger.log(payload.email);
         try{
             const user = await this.dbService.user.findFirstOrThrow(
                 {where:{
                     email:payload.email,
-                    AND:{deleted:false}
+                    AND:{deleted:0}
+                },select:{
+                    id:true,
+                    email:true,
+                    deleted:true,
+                    roles:{select:{name:true}}
                 }}
             );
-            delete user.password;
             return user;
         } catch(error){
             throw new HttpException({'message':[{'constrints':{'not-found':error}}]},HttpStatus.BAD_REQUEST);

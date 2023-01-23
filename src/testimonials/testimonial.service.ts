@@ -10,7 +10,7 @@ export class TestimonialService{
 
     async getPublicTestimonials(){
         return await this.dbService.testimonial.findMany({
-            where:{active:true},
+            where:{active:1},
             select:{autor:true, file:true, text:true}
         });
     }
