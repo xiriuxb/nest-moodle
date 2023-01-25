@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs
 import { CreateRoleDto, UpdateRoleDto } from "./role.dto";
 import { RoleServie } from "./role.service";
 
-@Controller('roles')
+@Controller('admin/roles')
 export class RoleController{
     constructor(
         private roleService:RoleServie
