@@ -27,7 +27,7 @@ import { UserModule } from './users/user.module';
     RolesModule,
     LocalCoursesModule,
     MoodleWsModule,
-    AdmLocalCoursesModule
+    AdmLocalCoursesModule,
   ],
   controllers: [],
   providers: [],

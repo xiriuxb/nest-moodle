@@ -13,3 +13,16 @@ export class UserDto {
     birth_day : string;
     deleted : boolean;
 }
+
+export class ChangePasswordDto{
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsString({message:'Debe ser un string'})
+    current_password:string;
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsString({message:'Debe ser un string'})
+    @MinLength(8,{message:'Debe tener por lo menos 8 caracteres'})
+    new_password:string;
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsString({message:'Debe ser un string'})
+    password_confirm:string;
+}

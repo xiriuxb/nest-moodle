@@ -26,7 +26,8 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt_query') {
                     id:true,
                     email:true,
                     deleted:true,
-                    roles:true
+                    password:true,
+                    roles:true,
                 }}
             );
             return user;
