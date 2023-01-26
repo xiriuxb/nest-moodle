@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail, IsAlpha, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsAlpha, IsString, MinLength, IsOptional, IsAlphanumeric, IsDate } from 'class-validator';
 
 export class UserDto {
     id : number;
@@ -25,4 +25,31 @@ export class ChangePasswordDto{
     @IsNotEmpty({message:'Campo requerido.'})
     @IsString({message:'Debe ser un string'})
     password_confirm:string;
+}
+
+export class ChangeEmailDto{
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsString({message:'Debe ser un string'})
+    current_password:string;
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsEmail({},{message:'Email inválido'})
+    new_email:string;
+}
+
+export class UpdateInfoDto{
+    @IsAlpha('en-US',{message:'Solo letras'})
+    @IsOptional()
+    country?:string;
+    @IsAlphanumeric('en-US',{message:'Solo letras'})
+    @IsOptional()
+    region?:string;
+    @IsDate()
+    @IsOptional()
+    birth_day?:string;
+}
+
+export class DeleteProfileDto{
+    @IsNotEmpty({message:'Campo requerido.'})
+    @IsString({message:'Debe ser un string'})
+    current_password:string;
 }
