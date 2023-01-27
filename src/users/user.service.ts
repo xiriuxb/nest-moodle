@@ -98,6 +98,17 @@ export class UserService {
         }
     }
 
+    async getEnrolments(userId:number){
+        try{
+            return await this.dbService.user.findUnique({
+                where:{id:userId},
+                select:{enrolments:{select:{course:{select:{category:true,fullname:true, shortname:true}}}}}
+            });
+        } catch(error){
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     private async verifyArgonPassword(plainPassword:string, hashed:string) : Promise<boolean>{
         const argon2 = require('argon2');
         return await argon2.verify(hashed,plainPassword);
