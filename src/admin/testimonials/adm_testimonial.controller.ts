@@ -3,8 +3,8 @@ import { CreateTestimoniallDTO, UpdateTestimoniallDTO } from "./adm_testimonial.
 import { AdminTestimonialService } from "./adm_testimonial.service";
 import { JwtGuardBearer } from "../../auth/guards/jwt_bearer.guard";
 import { GetUser } from "../../auth/decorator/get-user.decorator";
-import { User } from "@prisma/client";
 import { RoleGuard } from "src/auth/guards/roles.guard";
+import { User } from "prisma/generated/nestClient";
 
 @Controller('admin/testimonials')
 export class AdminTestimonialController{

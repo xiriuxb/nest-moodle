@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { Prisma, User } from "@prisma/client";
+import { Prisma, User } from "prisma/generated/nestClient";
 import { DatabaseService } from "src/database/database.service";
 import { MailService } from "src/mail/mail.service";
 import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";

@@ -52,7 +52,7 @@ model Course {
   id         Int         @id @default(autoincrement())
   moodle_id  Int         @unique
   fullname   String      @db.VarChar(255)
-  shortname  String      @db.VarChar(128)
+  shortname  String      @db.VarChar(128) @unique
   category   String      @db.VarChar(128)
   destacado  Int         @default(0) @db.TinyInt
   created_at DateTime    @default(now())

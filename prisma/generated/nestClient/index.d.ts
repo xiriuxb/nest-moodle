@@ -11187,6 +11187,7 @@ export namespace Prisma {
   export type CourseWhereUniqueInput = {
     id?: number
     moodle_id?: number
+    shortname?: string
   }
 
   export type CourseOrderByWithAggregationInput = {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AdmLocalCoursesModule } from './admin/cursos_local/adm_cursos_local.module';
+import { AdmPayMethodModule } from './admin/payment_methods/adm_pay_method.module';
 import { RolesModule } from './admin/roles/role.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,6 +29,7 @@ import { UserModule } from './users/user.module';
     LocalCoursesModule,
     MoodleWsModule,
     AdmLocalCoursesModule,
+    AdmPayMethodModule,
   ],
   controllers: [],
   providers: [],
