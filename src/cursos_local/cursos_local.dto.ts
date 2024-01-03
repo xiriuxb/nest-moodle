@@ -1,8 +1,11 @@
 import { Exclude, Expose } from "class-transformer";
-import { IsArray, IsString } from "class-validator";
+import { IsArray, IsInt, IsString } from "class-validator";
 
 @Exclude()
 export class CursoLocalDTO{
+    @Expose()
+    @IsInt()
+    moodle_id:number;
     @Expose()
     @IsString()
     fullname:string;
