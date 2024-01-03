@@ -44,6 +44,7 @@ describe('Tests in cursos_local.service',()=>{
     test('should create a local-course in db if not exist',async()=>{
         const prisma = new PrismaClient();
         await prisma.course.deleteMany({where:{moodle_id:4}})
+        prisma.$disconnect();
         try {
             jest.spyOn(MoodleWsService.prototype,'findCoursesBy').mockResolvedValueOnce({
                 categoryname:'Category 1',
