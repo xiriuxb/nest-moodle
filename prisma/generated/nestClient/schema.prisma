@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = "native"
   output   = "./generated/nestClient"
 }
 
@@ -89,7 +90,7 @@ model Payment {
   payer_email       String        @db.VarChar(128)
   payer_name        String        @db.VarChar(128)
   transaction_id    String        @db.VarChar(128)
-  file              String        @db.VarChar(256)
+  file              String?        @db.VarChar(256)
   created_at        DateTime      @default(now())
   updated_at        DateTime      @updatedAt
   payment_method_id Int
