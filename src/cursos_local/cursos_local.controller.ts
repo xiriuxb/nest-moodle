@@ -1,6 +1,8 @@
-import { Controller, Get, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { LocalCoursesService } from "./cursos_local.service";
 
+@ApiTags('local_courses')
 @Controller('local_courses')
 export class LocalCoursesController{
     constructor(

@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { SetUnsetDto } from "./adm_cursos_local.dto";
 import { AdmLocalCoursesService } from "./adm_cursos_local.service";
 
+@ApiTags('admin/local_courses')
 @Controller('admin/local_courses')
 export class AdmLocalCoursesController{
     constructor(

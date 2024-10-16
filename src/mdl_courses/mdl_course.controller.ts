@@ -1,7 +1,9 @@
-import { Controller, DefaultValuePipe, Get, Logger, Param, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
+import { Controller, DefaultValuePipe, Get, Param, Query, ValidationPipe } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { GetAllMdlCoursesDTO } from "./mdl_course.dto";
 import { MdlCourseService } from "./mdl_course.service";
 
+@ApiTags('mdl_courses')
 @Controller('mdl_courses')
 export class MdlCourseController {
     constructor(

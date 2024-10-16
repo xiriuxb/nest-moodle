@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { CreateTestimoniallDTO, UpdateTestimoniallDTO } from "./adm_testimonial.dto"
 import { AdminTestimonialService } from "./adm_testimonial.service";
 import { JwtGuardBearer } from "../../auth/guards/jwt_bearer.guard";
@@ -6,6 +7,7 @@ import { GetUser } from "../../auth/decorator/get-user.decorator";
 import { RoleGuard } from "src/auth/guards/roles.guard";
 import { User } from "prisma/generated/nestClient";
 
+@ApiTags('admin/testimonials')
 @Controller('admin/testimonials')
 export class AdminTestimonialController{
     constructor(
