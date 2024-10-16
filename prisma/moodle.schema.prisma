@@ -1,0 +1,64 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "./generated/moodleClient"
+    log      = ["query"]
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("MOODLE_DB_URL")
+}
+
+model mdl_course {
+    id            Int                    @id @default(autoincrement())
+    category      Int                    @db.Int
+    fullname      String                 @db.VarChar(254)
+    shortname     String                 @db.VarChar(255)
+    summary       String                 @db.LongText
+    visible       Int                    @default(1) @db.TinyInt
+    timecreated   Int                    @db.Int
+    category_name mdl_course_categories  @relation(fields: [category], references: [id])
+    custom_data   mdl_customfield_data[]
+    context       mdl_context[]
+}
+
+model mdl_course_categories {
+    id      Int          @id @default(autoincrement())
+    name    String       @db.VarChar(255)
+    visible Int          @default(1) @db.TinyInt
+    courses mdl_course[]
+}
+
+model mdl_context {
+    id           Int         @id @default(autoincrement())
+    instanceid   Int         @db.Int
+    contextlevel Int         @db.Int
+    course       mdl_course  @relation(fields: [instanceid], references: [id])
+    files        mdl_files[]
+}
+
+model mdl_files {
+    id        Int         @id
+    contextid Int         @unique @db.Int
+    filename  String      @db.VarChar(255)
+    component String      @db.VarChar(100)
+    context   mdl_context @relation(fields: [contextid], references: [id])
+}
+
+model mdl_customfield_data {
+    id          Int                   @id
+    instanceid  Int                   @db.Int
+    fieldid     Int                   @unique @db.Int
+    value       String                @db.LongText
+    valueformat Int                   @db.Int
+    charvalue   String                @db.VarChar(1333)
+    field_name  mdl_customfield_field @relation(fields: [fieldid], references: [id])
+    course      mdl_course            @relation(fields: [instanceid], references: [id])
+}
+
+model mdl_customfield_field {
+    id        Int                    @id
+    shortname String                 @db.VarChar(100)
+    name      String                 @db.VarChar(255)
+    datas     mdl_customfield_data[]
+}

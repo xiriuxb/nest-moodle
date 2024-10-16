@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const {
   Decimal,
   objectEnumValues,
-  makeStrictEnum
+  makeStrictEnum,
+  Public,
 } = require('./runtime/index-browser')
 
 
@@ -13,12 +14,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.7.1
- * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
+ * Prisma Client JS version: 4.16.2
+ * Query Engine version: 4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
  */
 Prisma.prismaVersion = {
-  client: "4.7.1",
-  engine: "272861e07ab64f234d3ffc4094e32bd61775599c"
+  client: "4.16.2",
+  engine: "4bc8b6e1b66cb932731fb1bdbbc550d1e010de81"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -66,8 +67,19 @@ Prisma.raw = () => {
   throw new Error(`raw is unable to be run in the browser.
 In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
 )}
-Prisma.validator = () => (val) => val
+Prisma.validator = Public.validator
 
+/**
+* Extensions
+*/
+Prisma.getExtensionContext = () => {
+  throw new Error(`Extensions.getExtensionContext is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
+Prisma.defineExtension = () => {
+  throw new Error(`Extensions.defineExtension is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
 
 /**
  * Shorthand utilities for JSON filtering
@@ -85,97 +97,6 @@ Prisma.NullTypes = {
 /**
  * Enums
  */
-// Based on
-// https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-function makeEnum(x) { return x; }
-
-exports.Prisma.CourseScalarFieldEnum = makeEnum({
-  id: 'id',
-  moodle_id: 'moodle_id',
-  fullname: 'fullname',
-  shortname: 'shortname',
-  category: 'category',
-  destacado: 'destacado',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.EnrolmentScalarFieldEnum = makeEnum({
-  id: 'id',
-  username: 'username',
-  curso_moodle_id: 'curso_moodle_id',
-  description: 'description',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  user_id: 'user_id',
-  enrolment_status_id: 'enrolment_status_id',
-  payment_id: 'payment_id',
-  course_id: 'course_id'
-});
-
-exports.Prisma.EnrolmentStatusScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.PaymentMethodScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  label: 'label',
-  active: 'active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.PaymentScalarFieldEnum = makeEnum({
-  id: 'id',
-  amount: 'amount',
-  currency: 'currency',
-  payment_status: 'payment_status',
-  payment_id: 'payment_id',
-  payer_id: 'payer_id',
-  payer_email: 'payer_email',
-  payer_name: 'payer_name',
-  transaction_id: 'transaction_id',
-  file: 'file',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  payment_method_id: 'payment_method_id'
-});
-
-exports.Prisma.PermissionScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.RoleScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  active: 'active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.SortOrder = makeEnum({
-  asc: 'asc',
-  desc: 'desc'
-});
-
-exports.Prisma.TestimonialScalarFieldEnum = makeEnum({
-  id: 'id',
-  autor: 'autor',
-  updated_by: 'updated_by',
-  text: 'text',
-  active: 'active',
-  file: 'file',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
@@ -184,7 +105,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = makeEnum({
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   last_name: 'last_name',
@@ -199,10 +120,103 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
   created_at: 'created_at',
   updated_at: 'updated_at',
   remember_token: 'remember_token'
-});
+};
+
+exports.Prisma.RoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  active: 'active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.PermissionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.CourseScalarFieldEnum = {
+  id: 'id',
+  moodle_id: 'moodle_id',
+  fullname: 'fullname',
+  shortname: 'shortname',
+  category: 'category',
+  destacado: 'destacado',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.EnrolmentStatusScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.PaymentMethodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  label: 'label',
+  active: 'active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  currency: 'currency',
+  payment_status: 'payment_status',
+  payment_id: 'payment_id',
+  payer_id: 'payer_id',
+  payer_email: 'payer_email',
+  payer_name: 'payer_name',
+  transaction_id: 'transaction_id',
+  file: 'file',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  payment_method_id: 'payment_method_id'
+};
+
+exports.Prisma.EnrolmentScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  curso_moodle_id: 'curso_moodle_id',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  user_id: 'user_id',
+  enrolment_status_id: 'enrolment_status_id',
+  payment_id: 'payment_id',
+  course_id: 'course_id'
+};
+
+exports.Prisma.TestimonialScalarFieldEnum = {
+  id: 'id',
+  autor: 'autor',
+  updated_by: 'updated_by',
+  text: 'text',
+  active: 'active',
+  file: 'file',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 
 
-exports.Prisma.ModelName = makeEnum({
+exports.Prisma.ModelName = {
   User: 'User',
   Role: 'Role',
   Permission: 'Permission',
@@ -212,7 +226,7 @@ exports.Prisma.ModelName = makeEnum({
   Payment: 'Payment',
   Enrolment: 'Enrolment',
   Testimonial: 'Testimonial'
-});
+};
 
 /**
  * Create the Client

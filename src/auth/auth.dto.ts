@@ -1,4 +1,4 @@
-import { IsAlpha, IsEmail, IsNotEmpty, MinLength } from "class-validator";
+import { IsAlpha, IsEmail, IsNotEmpty, Matches, MinLength } from "class-validator";
 
 export class SigninDTO {
     @IsNotEmpty({message:'Campo requerido.'})
@@ -24,10 +24,10 @@ export class ResetNewPasswordDTO {
 
 export class UserRegisterDto {
     @IsNotEmpty({message:'Campo requerido.'})
-    @IsAlpha('en-US', {message:'Solo se aceptan letras.'})
+    @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/, {message:'Formato no válido.'})
     name : string;
     @IsNotEmpty({message:'Campo requerido'})
-    @IsAlpha('en-US', {message:'Solo se aceptan letras.'})
+    @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/, {message:'Formato no válido.'})
     last_name : string;
     @IsNotEmpty({message:'Campo requerido.'})
     @IsEmail({},{message:'Email no válido'})

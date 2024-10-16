@@ -16,7 +16,7 @@ export class AdmLocalCoursesService{
             
             const course : CursoLocalFromMdlDto = plainToClass(
                 CursoLocalFromMdlDto,
-                (await this.mdlWsService.findByIds([courseMdlId])).courses[0]
+                (await this.mdlWsService.findCoursesBy('ids', [courseMdlId])).courses[0]
             );
             const courseIfExist = await this.dbService.course.findUnique({where:{moodle_id:courseMdlId}});
             if(courseIfExist){

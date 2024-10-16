@@ -11,7 +11,7 @@ export class MoodleWsService {
         private readonly axiosService: HttpService,
     ) { }
 
-    readonly baseQuery = `${this.config.get('MOODLE_WS_URL')}?&wsfunction=${
+    private readonly baseQuery = `${this.config.get('MOODLE_WS_URL')}?&wsfunction=${
         MoodleWsFunctions.GET_COURSES_BY_FIELD}&wstoken=${
         this.config.get('MOODLE_WS_TOKEN')}&moodlewsrestformat=json`;
 

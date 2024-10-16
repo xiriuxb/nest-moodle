@@ -3,8 +3,9 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Prisma, User } from "prisma/generated/nestClient";
 import { DatabaseService } from "src/database/database.service";
-import { MailService } from "src/mail/mail.service";
+import { EmailTemplates, MailService } from "src/mail/mail.service";
 import { ResetNewPasswordDTO, ResetPasswordDTO, SigninDTO, UserRegisterDto } from "./auth.dto";
+import { logger } from "handlebars";
 
 @Injectable()
 export class AuthService{
@@ -52,7 +53,12 @@ export class AuthService{
                   remember_token: token,
                 },
               });
-            await this.mailService.sendUserResetPswrdToken(user.email, user.name,token);
+            const url = `${this.config.get('APP_URL')}auth/password_reset?token=${token}`;
+            await this.mailService.sendEmail(
+                user.email, 
+                EmailTemplates.RESET_PASSWORD,
+                {name:user.name, url}
+            );
             return {message:'Email enviado', status: HttpStatus.OK};
             
         } catch (error) {
@@ -102,9 +108,11 @@ export class AuthService{
                     username: true
                 }
             });
-            await this.mailService.sendConfirmEmail(newUser.email, newUser.name,token);
+            const url = `${this.config.get('APP_URL')}auth/confirm?token=${token}`;
+            // await this.mailService.sendEmail(newUser.email, EmailTemplates.CONFIRM_EMAIL,{name:newUser.name, url});
             return newUser;
         } catch (error) {
+            logger.log(1,error);
             if(error instanceof Prisma.PrismaClientKnownRequestError){
                 if (error.code === 'P2002') {
                     throw new HttpException({'message':[{'property':'email', 'constrints':{'used':'Email ya registrado'}}]},
@@ -143,7 +151,8 @@ export class AuthService{
                 where:{id:user.id},
                 data:{remember_token:token}
             });
-            await this.mailService.sendConfirmEmail(user.email, user.name, token);
+            const url = `${this.config.get('APP_URL')}auth/confirm?token=${token}`;
+            await this.mailService.sendEmail(user.email, EmailTemplates.CONFIRM_EMAIL,{name:user.name, url});
             return {message:'Email reenviado', status:HttpStatus.OK}
         } catch(error){
             throw new HttpException({'message':[{'constrints':{'error':error}}]},HttpStatus.BAD_REQUEST);

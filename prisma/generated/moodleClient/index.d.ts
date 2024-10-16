@@ -3,83 +3,135 @@
  * Client
 **/
 
-import * as runtime from './runtime/index';
-declare const prisma: unique symbol
-export type PrismaPromise<A> = Promise<A> & {[prisma]: true}
-type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
-type UnwrapTuple<Tuple extends readonly unknown[]> = {
-  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
-};
+import * as runtime from './runtime/library';
+import $Types = runtime.Types // general types
+import $Public = runtime.Types.Public
+import $Utils = runtime.Types.Utils
+import $Extensions = runtime.Types.Extensions
 
+export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+
+export type mdl_coursePayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_course"
+  objects: {
+    category_name: mdl_course_categoriesPayload<ExtArgs>
+    custom_data: mdl_customfield_dataPayload<ExtArgs>[]
+    context: mdl_contextPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    category: number
+    fullname: string
+    shortname: string
+    summary: string
+    visible: number
+    timecreated: number
+  }, ExtArgs["result"]["mdl_course"]>
+  composites: {}
+}
 
 /**
  * Model mdl_course
  * 
  */
-export type mdl_course = {
-  id: number
-  category: number
-  fullname: string
-  shortname: string
-  summary: string
-  visible: number
-  timecreated: number
+export type mdl_course = runtime.Types.DefaultSelection<mdl_coursePayload>
+export type mdl_course_categoriesPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_course_categories"
+  objects: {
+    courses: mdl_coursePayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    name: string
+    visible: number
+  }, ExtArgs["result"]["mdl_course_categories"]>
+  composites: {}
 }
 
 /**
  * Model mdl_course_categories
  * 
  */
-export type mdl_course_categories = {
-  id: number
-  name: string
-  visible: number
+export type mdl_course_categories = runtime.Types.DefaultSelection<mdl_course_categoriesPayload>
+export type mdl_contextPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_context"
+  objects: {
+    course: mdl_coursePayload<ExtArgs>
+    files: mdl_filesPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    instanceid: number
+    contextlevel: number
+  }, ExtArgs["result"]["mdl_context"]>
+  composites: {}
 }
 
 /**
  * Model mdl_context
  * 
  */
-export type mdl_context = {
-  id: number
-  instanceid: number
-  contextlevel: number
+export type mdl_context = runtime.Types.DefaultSelection<mdl_contextPayload>
+export type mdl_filesPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_files"
+  objects: {
+    context: mdl_contextPayload<ExtArgs>
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    contextid: number
+    filename: string
+    component: string
+  }, ExtArgs["result"]["mdl_files"]>
+  composites: {}
 }
 
 /**
  * Model mdl_files
  * 
  */
-export type mdl_files = {
-  id: number
-  contextid: number
-  filename: string
-  component: string
+export type mdl_files = runtime.Types.DefaultSelection<mdl_filesPayload>
+export type mdl_customfield_dataPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_customfield_data"
+  objects: {
+    field_name: mdl_customfield_fieldPayload<ExtArgs>
+    course: mdl_coursePayload<ExtArgs>
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    instanceid: number
+    fieldid: number
+    value: string
+    valueformat: number
+    charvalue: string
+  }, ExtArgs["result"]["mdl_customfield_data"]>
+  composites: {}
 }
 
 /**
  * Model mdl_customfield_data
  * 
  */
-export type mdl_customfield_data = {
-  id: number
-  instanceid: number
-  fieldid: number
-  value: string
-  valueformat: number
-  charvalue: string
+export type mdl_customfield_data = runtime.Types.DefaultSelection<mdl_customfield_dataPayload>
+export type mdl_customfield_fieldPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  name: "mdl_customfield_field"
+  objects: {
+    datas: mdl_customfield_dataPayload<ExtArgs>[]
+  }
+  scalars: $Extensions.GetResult<{
+    id: number
+    shortname: string
+    name: string
+  }, ExtArgs["result"]["mdl_customfield_field"]>
+  composites: {}
 }
 
 /**
  * Model mdl_customfield_field
  * 
  */
-export type mdl_customfield_field = {
-  id: number
-  shortname: string
-  name: string
-}
-
+export type mdl_customfield_field = runtime.Types.DefaultSelection<mdl_customfield_fieldPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -100,8 +152,11 @@ export class PrismaClient<
   U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
   GlobalReject extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined = 'rejectOnNotFound' extends keyof T
     ? T['rejectOnNotFound']
-    : false
-      > {
+    : false,
+  ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs
+> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
+
     /**
    * ##  Prisma Client ʲˢ
    * 
@@ -132,6 +187,8 @@ export class PrismaClient<
 
   /**
    * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
    */
   $use(cb: Prisma.Middleware): void
 
@@ -144,7 +201,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<number>;
+  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Executes a raw query and returns the number of affected rows.
@@ -156,7 +213,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<number>;
+  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Performs a prepared raw query and returns the `SELECT` data.
@@ -167,7 +224,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<T>;
+  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Performs a raw query and returns the `SELECT` data.
@@ -179,7 +236,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<T>;
+  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
@@ -194,9 +251,12 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
    */
-  $transaction<P extends PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<UnwrapTuple<P>>;
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<runtime.Types.Utils.UnwrapTuple<P>>
 
-  $transaction<R>(fn: (prisma: Prisma.TransactionClient) => Promise<R>, options?: {maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel}): Promise<R>;
+  $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => Promise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<R>
+
+
+  $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
    * `prisma.mdl_course`: Exposes CRUD operations for the **mdl_course** model.
@@ -206,7 +266,7 @@ export class PrismaClient<
     * const mdl_courses = await prisma.mdl_course.findMany()
     * ```
     */
-  get mdl_course(): Prisma.mdl_courseDelegate<GlobalReject>;
+  get mdl_course(): Prisma.mdl_courseDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.mdl_course_categories`: Exposes CRUD operations for the **mdl_course_categories** model.
@@ -216,7 +276,7 @@ export class PrismaClient<
     * const mdl_course_categories = await prisma.mdl_course_categories.findMany()
     * ```
     */
-  get mdl_course_categories(): Prisma.mdl_course_categoriesDelegate<GlobalReject>;
+  get mdl_course_categories(): Prisma.mdl_course_categoriesDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.mdl_context`: Exposes CRUD operations for the **mdl_context** model.
@@ -226,7 +286,7 @@ export class PrismaClient<
     * const mdl_contexts = await prisma.mdl_context.findMany()
     * ```
     */
-  get mdl_context(): Prisma.mdl_contextDelegate<GlobalReject>;
+  get mdl_context(): Prisma.mdl_contextDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.mdl_files`: Exposes CRUD operations for the **mdl_files** model.
@@ -236,7 +296,7 @@ export class PrismaClient<
     * const mdl_files = await prisma.mdl_files.findMany()
     * ```
     */
-  get mdl_files(): Prisma.mdl_filesDelegate<GlobalReject>;
+  get mdl_files(): Prisma.mdl_filesDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.mdl_customfield_data`: Exposes CRUD operations for the **mdl_customfield_data** model.
@@ -246,7 +306,7 @@ export class PrismaClient<
     * const mdl_customfield_data = await prisma.mdl_customfield_data.findMany()
     * ```
     */
-  get mdl_customfield_data(): Prisma.mdl_customfield_dataDelegate<GlobalReject>;
+  get mdl_customfield_data(): Prisma.mdl_customfield_dataDelegate<GlobalReject, ExtArgs>;
 
   /**
    * `prisma.mdl_customfield_field`: Exposes CRUD operations for the **mdl_customfield_field** model.
@@ -256,11 +316,18 @@ export class PrismaClient<
     * const mdl_customfield_fields = await prisma.mdl_customfield_field.findMany()
     * ```
     */
-  get mdl_customfield_field(): Prisma.mdl_customfield_fieldDelegate<GlobalReject>;
+  get mdl_customfield_field(): Prisma.mdl_customfield_fieldDelegate<GlobalReject, ExtArgs>;
 }
 
 export namespace Prisma {
   export import DMMF = runtime.DMMF
+
+  export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+  /**
+   * Validator
+   */
+  export import validator = runtime.Public.validator
 
   /**
    * Prisma Errors
@@ -296,10 +363,19 @@ export namespace Prisma {
   export type MetricHistogram = runtime.MetricHistogram
   export type MetricHistogramBucket = runtime.MetricHistogramBucket
 
+  /**
+  * Extensions
+  */
+  export type Extension = $Extensions.UserArgs
+  export import getExtensionContext = runtime.Extensions.getExtensionContext
+  export type Args<T, F extends $Public.Operation> = $Public.Args<T, F>
+  export type Payload<T, F extends $Public.Operation> = $Public.Payload<T, F>
+  export type Result<T, A, F extends $Public.Operation> = $Public.Result<T, A, F>
+  export type Exact<T, W> = $Public.Exact<T, W>
 
   /**
-   * Prisma Client JS version: 4.7.1
-   * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
+   * Prisma Client JS version: 4.16.2
+   * Query Engine version: 4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
    */
   export type PrismaVersion = {
     client: string
@@ -663,19 +739,11 @@ export namespace Prisma {
 
   export type Keys<U extends Union> = U extends unknown ? keyof U : never
 
-  type Exact<A, W = unknown> = 
-  W extends unknown ? A extends Narrowable ? Cast<A, W> : Cast<
-  {[K in keyof A]: K extends keyof W ? Exact<A[K], W[K]> : never},
-  {[K in keyof W]: K extends keyof A ? Exact<A[K], W[K]> : W[K]}>
-  : never;
-
-  type Narrowable = string | number | boolean | bigint;
-
   type Cast<A, B> = A extends B ? A : B;
 
   export const type: unique symbol;
 
-  export function validator<V>(): <S>(select: Exact<S, V>) => S;
+
 
   /**
    * Used by group by
@@ -730,15 +798,6 @@ export namespace Prisma {
 
   type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>
 
-  class PrismaClientFetcher {
-    private readonly prisma;
-    private readonly debug;
-    private readonly hooks?;
-    constructor(prisma: PrismaClient<any, any>, debug?: boolean, hooks?: Hooks | undefined);
-    request<T>(document: any, dataPath?: string[], rootField?: string, typeName?: string, isList?: boolean, callsite?: string): Promise<T>;
-    sanitizeMessage(message: string): string;
-    protected unpack(document: any, data: any, path: string[], rootField?: string, isList?: boolean): any;
-  }
 
   export const ModelName: {
     mdl_course: 'mdl_course',
@@ -756,6 +815,433 @@ export namespace Prisma {
     db?: Datasource
   }
 
+
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.Args}, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs']>
+  }
+
+  export type TypeMap<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    meta: {
+      modelProps: 'mdl_course' | 'mdl_course_categories' | 'mdl_context' | 'mdl_files' | 'mdl_customfield_data' | 'mdl_customfield_field'
+      txIsolationLevel: Prisma.TransactionIsolationLevel
+    },
+    model: {
+      mdl_course: {
+        payload: mdl_coursePayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_courseFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_courseFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_courseFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_courseFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          findMany: {
+            args: Prisma.mdl_courseFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>[]
+          }
+          create: {
+            args: Prisma.mdl_courseCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          createMany: {
+            args: Prisma.mdl_courseCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_courseDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          update: {
+            args: Prisma.mdl_courseUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_courseDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_courseUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_courseUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_coursePayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_courseAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_course>
+          }
+          groupBy: {
+            args: Prisma.Mdl_courseGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_courseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_courseCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_courseCountAggregateOutputType> | number
+          }
+        }
+      }
+      mdl_course_categories: {
+        payload: mdl_course_categoriesPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_course_categoriesFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_course_categoriesFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_course_categoriesFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_course_categoriesFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          findMany: {
+            args: Prisma.mdl_course_categoriesFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>[]
+          }
+          create: {
+            args: Prisma.mdl_course_categoriesCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          createMany: {
+            args: Prisma.mdl_course_categoriesCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_course_categoriesDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          update: {
+            args: Prisma.mdl_course_categoriesUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_course_categoriesDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_course_categoriesUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_course_categoriesUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_course_categoriesPayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_course_categoriesAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_course_categories>
+          }
+          groupBy: {
+            args: Prisma.Mdl_course_categoriesGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_course_categoriesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_course_categoriesCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_course_categoriesCountAggregateOutputType> | number
+          }
+        }
+      }
+      mdl_context: {
+        payload: mdl_contextPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_contextFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_contextFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_contextFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_contextFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          findMany: {
+            args: Prisma.mdl_contextFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>[]
+          }
+          create: {
+            args: Prisma.mdl_contextCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          createMany: {
+            args: Prisma.mdl_contextCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_contextDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          update: {
+            args: Prisma.mdl_contextUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_contextDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_contextUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_contextUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_contextPayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_contextAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_context>
+          }
+          groupBy: {
+            args: Prisma.Mdl_contextGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_contextGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_contextCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_contextCountAggregateOutputType> | number
+          }
+        }
+      }
+      mdl_files: {
+        payload: mdl_filesPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_filesFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_filesFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_filesFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_filesFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          findMany: {
+            args: Prisma.mdl_filesFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>[]
+          }
+          create: {
+            args: Prisma.mdl_filesCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          createMany: {
+            args: Prisma.mdl_filesCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_filesDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          update: {
+            args: Prisma.mdl_filesUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_filesDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_filesUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_filesUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_filesPayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_filesAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_files>
+          }
+          groupBy: {
+            args: Prisma.Mdl_filesGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_filesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_filesCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_filesCountAggregateOutputType> | number
+          }
+        }
+      }
+      mdl_customfield_data: {
+        payload: mdl_customfield_dataPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_customfield_dataFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_customfield_dataFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_customfield_dataFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_customfield_dataFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          findMany: {
+            args: Prisma.mdl_customfield_dataFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>[]
+          }
+          create: {
+            args: Prisma.mdl_customfield_dataCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          createMany: {
+            args: Prisma.mdl_customfield_dataCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_customfield_dataDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          update: {
+            args: Prisma.mdl_customfield_dataUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_customfield_dataDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_customfield_dataUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_customfield_dataUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_dataPayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_customfield_dataAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_customfield_data>
+          }
+          groupBy: {
+            args: Prisma.Mdl_customfield_dataGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_customfield_dataGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_customfield_dataCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_customfield_dataCountAggregateOutputType> | number
+          }
+        }
+      }
+      mdl_customfield_field: {
+        payload: mdl_customfield_fieldPayload<ExtArgs>
+        operations: {
+          findUnique: {
+            args: Prisma.mdl_customfield_fieldFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.mdl_customfield_fieldFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          findFirst: {
+            args: Prisma.mdl_customfield_fieldFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.mdl_customfield_fieldFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          findMany: {
+            args: Prisma.mdl_customfield_fieldFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>[]
+          }
+          create: {
+            args: Prisma.mdl_customfield_fieldCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          createMany: {
+            args: Prisma.mdl_customfield_fieldCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.mdl_customfield_fieldDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          update: {
+            args: Prisma.mdl_customfield_fieldUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          deleteMany: {
+            args: Prisma.mdl_customfield_fieldDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.mdl_customfield_fieldUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.mdl_customfield_fieldUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<mdl_customfield_fieldPayload>
+          }
+          aggregate: {
+            args: Prisma.Mdl_customfield_fieldAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMdl_customfield_field>
+          }
+          groupBy: {
+            args: Prisma.Mdl_customfield_fieldGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_customfield_fieldGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.mdl_customfield_fieldCountArgs<ExtArgs>,
+            result: $Utils.Optional<Mdl_customfield_fieldCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
+  } & {
+    other: {
+      payload: any
+      operations: {
+        $executeRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $executeRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+        $queryRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $queryRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+      }
+    }
+  }
+  export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
+  export type DefaultPrismaClient = PrismaClient
   export type RejectOnNotFound = boolean | ((error: Error) => Error)
   export type RejectPerModel = { [P in ModelName]?: RejectOnNotFound }
   export type RejectPerOperation =  { [P in "findUnique" | "findFirst"]?: RejectPerModel | RejectOnNotFound } 
@@ -822,10 +1308,6 @@ export namespace Prisma {
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
     log?: Array<LogLevel | LogDefinition>
-  }
-
-  export type Hooks = {
-    beforeRequest?: (options: { query: string, path: string[], rootField?: string, typeName?: string, document: any }) => any
   }
 
   /* Types for Logging */
@@ -899,7 +1381,7 @@ export namespace Prisma {
   /**
    * `PrismaClient` proxy available in interactive transactions.
    */
-  export type TransactionClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>
+  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, runtime.ITXClientDenyList>
 
   export type Datasource = {
     url?: string
@@ -920,38 +1402,37 @@ export namespace Prisma {
     context: number
   }
 
-  export type Mdl_courseCountOutputTypeSelect = {
-    custom_data?: boolean
-    context?: boolean
+  export type Mdl_courseCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    custom_data?: boolean | Mdl_courseCountOutputTypeCountCustom_dataArgs
+    context?: boolean | Mdl_courseCountOutputTypeCountContextArgs
   }
-
-  export type Mdl_courseCountOutputTypeGetPayload<S extends boolean | null | undefined | Mdl_courseCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Mdl_courseCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (Mdl_courseCountOutputTypeArgs)
-    ? Mdl_courseCountOutputType 
-    : S extends { select: any } & (Mdl_courseCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof Mdl_courseCountOutputType ? Mdl_courseCountOutputType[P] : never
-  } 
-      : Mdl_courseCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * Mdl_courseCountOutputType without action
    */
-  export type Mdl_courseCountOutputTypeArgs = {
+  export type Mdl_courseCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mdl_courseCountOutputType
-     * 
-    **/
-    select?: Mdl_courseCountOutputTypeSelect | null
+     */
+    select?: Mdl_courseCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Mdl_courseCountOutputType without action
+   */
+  export type Mdl_courseCountOutputTypeCountCustom_dataArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: mdl_customfield_dataWhereInput
+  }
+
+
+  /**
+   * Mdl_courseCountOutputType without action
+   */
+  export type Mdl_courseCountOutputTypeCountContextArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: mdl_contextWhereInput
   }
 
 
@@ -965,37 +1446,28 @@ export namespace Prisma {
     courses: number
   }
 
-  export type Mdl_course_categoriesCountOutputTypeSelect = {
-    courses?: boolean
+  export type Mdl_course_categoriesCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    courses?: boolean | Mdl_course_categoriesCountOutputTypeCountCoursesArgs
   }
-
-  export type Mdl_course_categoriesCountOutputTypeGetPayload<S extends boolean | null | undefined | Mdl_course_categoriesCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Mdl_course_categoriesCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (Mdl_course_categoriesCountOutputTypeArgs)
-    ? Mdl_course_categoriesCountOutputType 
-    : S extends { select: any } & (Mdl_course_categoriesCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof Mdl_course_categoriesCountOutputType ? Mdl_course_categoriesCountOutputType[P] : never
-  } 
-      : Mdl_course_categoriesCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * Mdl_course_categoriesCountOutputType without action
    */
-  export type Mdl_course_categoriesCountOutputTypeArgs = {
+  export type Mdl_course_categoriesCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mdl_course_categoriesCountOutputType
-     * 
-    **/
-    select?: Mdl_course_categoriesCountOutputTypeSelect | null
+     */
+    select?: Mdl_course_categoriesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Mdl_course_categoriesCountOutputType without action
+   */
+  export type Mdl_course_categoriesCountOutputTypeCountCoursesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: mdl_courseWhereInput
   }
 
 
@@ -1009,37 +1481,28 @@ export namespace Prisma {
     files: number
   }
 
-  export type Mdl_contextCountOutputTypeSelect = {
-    files?: boolean
+  export type Mdl_contextCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    files?: boolean | Mdl_contextCountOutputTypeCountFilesArgs
   }
-
-  export type Mdl_contextCountOutputTypeGetPayload<S extends boolean | null | undefined | Mdl_contextCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Mdl_contextCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (Mdl_contextCountOutputTypeArgs)
-    ? Mdl_contextCountOutputType 
-    : S extends { select: any } & (Mdl_contextCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof Mdl_contextCountOutputType ? Mdl_contextCountOutputType[P] : never
-  } 
-      : Mdl_contextCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * Mdl_contextCountOutputType without action
    */
-  export type Mdl_contextCountOutputTypeArgs = {
+  export type Mdl_contextCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mdl_contextCountOutputType
-     * 
-    **/
-    select?: Mdl_contextCountOutputTypeSelect | null
+     */
+    select?: Mdl_contextCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Mdl_contextCountOutputType without action
+   */
+  export type Mdl_contextCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: mdl_filesWhereInput
   }
 
 
@@ -1053,37 +1516,28 @@ export namespace Prisma {
     datas: number
   }
 
-  export type Mdl_customfield_fieldCountOutputTypeSelect = {
-    datas?: boolean
+  export type Mdl_customfield_fieldCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    datas?: boolean | Mdl_customfield_fieldCountOutputTypeCountDatasArgs
   }
-
-  export type Mdl_customfield_fieldCountOutputTypeGetPayload<S extends boolean | null | undefined | Mdl_customfield_fieldCountOutputTypeArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Mdl_customfield_fieldCountOutputType :
-    S extends undefined ? never :
-    S extends { include: any } & (Mdl_customfield_fieldCountOutputTypeArgs)
-    ? Mdl_customfield_fieldCountOutputType 
-    : S extends { select: any } & (Mdl_customfield_fieldCountOutputTypeArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof Mdl_customfield_fieldCountOutputType ? Mdl_customfield_fieldCountOutputType[P] : never
-  } 
-      : Mdl_customfield_fieldCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * Mdl_customfield_fieldCountOutputType without action
    */
-  export type Mdl_customfield_fieldCountOutputTypeArgs = {
+  export type Mdl_customfield_fieldCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mdl_customfield_fieldCountOutputType
-     * 
-    **/
-    select?: Mdl_customfield_fieldCountOutputTypeSelect | null
+     */
+    select?: Mdl_customfield_fieldCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Mdl_customfield_fieldCountOutputType without action
+   */
+  export type Mdl_customfield_fieldCountOutputTypeCountDatasArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: mdl_customfield_dataWhereInput
   }
 
 
@@ -1196,39 +1650,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_courseAggregateArgs = {
+  export type Mdl_courseAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_course to aggregate.
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_courses to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_courseOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_courseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_courses from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_courses.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -1273,10 +1722,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_courseGroupByArgs = {
+  export type Mdl_courseGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_courseWhereInput
     orderBy?: Enumerable<mdl_courseOrderByWithAggregationInput>
-    by: Array<Mdl_courseScalarFieldEnum>
+    by: Mdl_courseScalarFieldEnum[]
     having?: mdl_courseScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -1303,7 +1752,7 @@ export namespace Prisma {
     _max: Mdl_courseMaxAggregateOutputType | null
   }
 
-  type GetMdl_courseGroupByPayload<T extends Mdl_courseGroupByArgs> = PrismaPromise<
+  type GetMdl_courseGroupByPayload<T extends Mdl_courseGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_courseGroupByOutputType, T['by']> &
         {
@@ -1317,7 +1766,7 @@ export namespace Prisma {
     >
 
 
-  export type mdl_courseSelect = {
+  export type mdl_courseSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     category?: boolean
     fullname?: boolean
@@ -1325,50 +1774,39 @@ export namespace Prisma {
     summary?: boolean
     visible?: boolean
     timecreated?: boolean
-    category_name?: boolean | mdl_course_categoriesArgs
-    custom_data?: boolean | mdl_customfield_dataFindManyArgs
-    context?: boolean | mdl_contextFindManyArgs
-    _count?: boolean | Mdl_courseCountOutputTypeArgs
+    category_name?: boolean | mdl_course_categoriesArgs<ExtArgs>
+    custom_data?: boolean | mdl_course$custom_dataArgs<ExtArgs>
+    context?: boolean | mdl_course$contextArgs<ExtArgs>
+    _count?: boolean | Mdl_courseCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_course"]>
+
+  export type mdl_courseSelectScalar = {
+    id?: boolean
+    category?: boolean
+    fullname?: boolean
+    shortname?: boolean
+    summary?: boolean
+    visible?: boolean
+    timecreated?: boolean
+  }
+
+  export type mdl_courseInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    category_name?: boolean | mdl_course_categoriesArgs<ExtArgs>
+    custom_data?: boolean | mdl_course$custom_dataArgs<ExtArgs>
+    context?: boolean | mdl_course$contextArgs<ExtArgs>
+    _count?: boolean | Mdl_courseCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type mdl_courseInclude = {
-    category_name?: boolean | mdl_course_categoriesArgs
-    custom_data?: boolean | mdl_customfield_dataFindManyArgs
-    context?: boolean | mdl_contextFindManyArgs
-    _count?: boolean | Mdl_courseCountOutputTypeArgs
-  } 
+  type mdl_courseGetPayload<S extends boolean | null | undefined | mdl_courseArgs> = $Types.GetResult<mdl_coursePayload, S>
 
-  export type mdl_courseGetPayload<S extends boolean | null | undefined | mdl_courseArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_course :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_courseArgs | mdl_courseFindManyArgs)
-    ? mdl_course  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'category_name' ? mdl_course_categoriesGetPayload<S['include'][P]> :
-        P extends 'custom_data' ? Array < mdl_customfield_dataGetPayload<S['include'][P]>>  :
-        P extends 'context' ? Array < mdl_contextGetPayload<S['include'][P]>>  :
-        P extends '_count' ? Mdl_courseCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_courseArgs | mdl_courseFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'category_name' ? mdl_course_categoriesGetPayload<S['select'][P]> :
-        P extends 'custom_data' ? Array < mdl_customfield_dataGetPayload<S['select'][P]>>  :
-        P extends 'context' ? Array < mdl_contextGetPayload<S['select'][P]>>  :
-        P extends '_count' ? Mdl_courseCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof mdl_course ? mdl_course[P] : never
-  } 
-      : mdl_course
-
-
-  type mdl_courseCountArgs = Merge<
+  type mdl_courseCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_courseFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_courseCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_courseDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_courseDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_course'], meta: { name: 'mdl_course' } }
     /**
      * Find zero or one Mdl_course that matches the filter.
      * @param {mdl_courseFindUniqueArgs} args - Arguments to find a Mdl_course
@@ -1380,9 +1818,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_courseFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_courseFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_course'> extends True ? Prisma__mdl_courseClient<mdl_courseGetPayload<T>> : Prisma__mdl_courseClient<mdl_courseGetPayload<T> | null, null>
+    findUnique<T extends mdl_courseFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_courseFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_course'> extends True ? Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_course that matches the filter or throw an error  with `error.code='P2025'` 
@@ -1396,9 +1834,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_courseFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_courseFindUniqueOrThrowArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_courseFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_courseFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_course that matches the filter.
@@ -1413,9 +1851,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_courseFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_courseFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_course'> extends True ? Prisma__mdl_courseClient<mdl_courseGetPayload<T>> : Prisma__mdl_courseClient<mdl_courseGetPayload<T> | null, null>
+    findFirst<T extends mdl_courseFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_courseFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_course'> extends True ? Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_course that matches the filter or
@@ -1431,9 +1869,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_courseFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_courseFindFirstOrThrowArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    findFirstOrThrow<T extends mdl_courseFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_courseFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_courses that matches the filter.
@@ -1451,9 +1889,9 @@ export namespace Prisma {
      * const mdl_courseWithIdOnly = await prisma.mdl_course.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_courseFindManyArgs>(
-      args?: SelectSubset<T, mdl_courseFindManyArgs>
-    ): PrismaPromise<Array<mdl_courseGetPayload<T>>>
+    findMany<T extends mdl_courseFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_courseFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_course.
@@ -1467,9 +1905,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_courseCreateArgs>(
-      args: SelectSubset<T, mdl_courseCreateArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    create<T extends mdl_courseCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_courseCreateArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_courses.
@@ -1483,9 +1921,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_courseCreateManyArgs>(
-      args?: SelectSubset<T, mdl_courseCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_courseCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_courseCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_course.
@@ -1499,9 +1937,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_courseDeleteArgs>(
-      args: SelectSubset<T, mdl_courseDeleteArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    delete<T extends mdl_courseDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_courseDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_course.
@@ -1518,9 +1956,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_courseUpdateArgs>(
-      args: SelectSubset<T, mdl_courseUpdateArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    update<T extends mdl_courseUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_courseUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_courses.
@@ -1534,9 +1972,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_courseDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_courseDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_courseDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_courseDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_courses.
@@ -1555,9 +1993,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_courseUpdateManyArgs>(
-      args: SelectSubset<T, mdl_courseUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_courseUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_courseUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_course.
@@ -1576,9 +2014,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_courseUpsertArgs>(
-      args: SelectSubset<T, mdl_courseUpsertArgs>
-    ): Prisma__mdl_courseClient<mdl_courseGetPayload<T>>
+    upsert<T extends mdl_courseUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_courseUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_courses.
@@ -1595,8 +2033,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_courseCountArgs>(
       args?: Subset<T, mdl_courseCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_courseCountAggregateOutputType>
@@ -1627,7 +2065,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_courseAggregateArgs>(args: Subset<T, Mdl_courseAggregateArgs>): PrismaPromise<GetMdl_courseAggregateType<T>>
+    aggregate<T extends Mdl_courseAggregateArgs>(args: Subset<T, Mdl_courseAggregateArgs>): Prisma.PrismaPromise<GetMdl_courseAggregateType<T>>
 
     /**
      * Group by Mdl_course.
@@ -1704,7 +2142,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_courseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_courseGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_courseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_courseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -1714,10 +2152,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_courseClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_courseClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -1728,14 +2164,14 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    category_name<T extends mdl_course_categoriesArgs= {}>(args?: Subset<T, mdl_course_categoriesArgs>): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T> | Null>;
+    category_name<T extends mdl_course_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, mdl_course_categoriesArgs<ExtArgs>>): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    custom_data<T extends mdl_customfield_dataFindManyArgs= {}>(args?: Subset<T, mdl_customfield_dataFindManyArgs>): PrismaPromise<Array<mdl_customfield_dataGetPayload<T>>| Null>;
+    custom_data<T extends mdl_course$custom_dataArgs<ExtArgs> = {}>(args?: Subset<T, mdl_course$custom_dataArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
-    context<T extends mdl_contextFindManyArgs= {}>(args?: Subset<T, mdl_contextFindManyArgs>): PrismaPromise<Array<mdl_contextGetPayload<T>>| Null>;
+    context<T extends mdl_course$contextArgs<ExtArgs> = {}>(args?: Subset<T, mdl_course$contextArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -1767,28 +2203,25 @@ export namespace Prisma {
   /**
    * mdl_course base type for findUnique actions
    */
-  export type mdl_courseFindUniqueArgsBase = {
+  export type mdl_courseFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course to fetch.
-     * 
-    **/
+     */
     where: mdl_courseWhereUniqueInput
   }
 
   /**
-   * mdl_course: findUnique
+   * mdl_course findUnique
    */
-  export interface mdl_courseFindUniqueArgs extends mdl_courseFindUniqueArgsBase {
+  export interface mdl_courseFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_courseFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -1800,21 +2233,18 @@ export namespace Prisma {
   /**
    * mdl_course findUniqueOrThrow
    */
-  export type mdl_courseFindUniqueOrThrowArgs = {
+  export type mdl_courseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course to fetch.
-     * 
-    **/
+     */
     where: mdl_courseWhereUniqueInput
   }
 
@@ -1822,63 +2252,55 @@ export namespace Prisma {
   /**
    * mdl_course base type for findFirst actions
    */
-  export type mdl_courseFindFirstArgsBase = {
+  export type mdl_courseFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course to fetch.
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_courses to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_courseOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_courses.
-     * 
-    **/
+     */
     cursor?: mdl_courseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_courses from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_courses.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_courses.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_courseScalarFieldEnum>
   }
 
   /**
-   * mdl_course: findFirst
+   * mdl_course findFirst
    */
-  export interface mdl_courseFindFirstArgs extends mdl_courseFindFirstArgsBase {
+  export interface mdl_courseFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_courseFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -1890,56 +2312,48 @@ export namespace Prisma {
   /**
    * mdl_course findFirstOrThrow
    */
-  export type mdl_courseFindFirstOrThrowArgs = {
+  export type mdl_courseFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course to fetch.
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_courses to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_courseOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_courses.
-     * 
-    **/
+     */
     cursor?: mdl_courseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_courses from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_courses.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_courses.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_courseScalarFieldEnum>
   }
 
@@ -1947,49 +2361,42 @@ export namespace Prisma {
   /**
    * mdl_course findMany
    */
-  export type mdl_courseFindManyArgs = {
+  export type mdl_courseFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter, which mdl_courses to fetch.
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_courses to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_courseOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_courses.
-     * 
-    **/
+     */
     cursor?: mdl_courseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_courses from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_courses.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_courseScalarFieldEnum>
   }
@@ -1998,21 +2405,18 @@ export namespace Prisma {
   /**
    * mdl_course create
    */
-  export type mdl_courseCreateArgs = {
+  export type mdl_courseCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_course.
-     * 
-    **/
+     */
     data: XOR<mdl_courseCreateInput, mdl_courseUncheckedCreateInput>
   }
 
@@ -2020,11 +2424,10 @@ export namespace Prisma {
   /**
    * mdl_course createMany
    */
-  export type mdl_courseCreateManyArgs = {
+  export type mdl_courseCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_courses.
-     * 
-    **/
+     */
     data: Enumerable<mdl_courseCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -2033,26 +2436,22 @@ export namespace Prisma {
   /**
    * mdl_course update
    */
-  export type mdl_courseUpdateArgs = {
+  export type mdl_courseUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_course.
-     * 
-    **/
+     */
     data: XOR<mdl_courseUpdateInput, mdl_courseUncheckedUpdateInput>
     /**
      * Choose, which mdl_course to update.
-     * 
-    **/
+     */
     where: mdl_courseWhereUniqueInput
   }
 
@@ -2060,16 +2459,14 @@ export namespace Prisma {
   /**
    * mdl_course updateMany
    */
-  export type mdl_courseUpdateManyArgs = {
+  export type mdl_courseUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_courses.
-     * 
-    **/
+     */
     data: XOR<mdl_courseUpdateManyMutationInput, mdl_courseUncheckedUpdateManyInput>
     /**
      * Filter which mdl_courses to update
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
   }
 
@@ -2077,31 +2474,26 @@ export namespace Prisma {
   /**
    * mdl_course upsert
    */
-  export type mdl_courseUpsertArgs = {
+  export type mdl_courseUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_course to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_courseWhereUniqueInput
     /**
      * In case the mdl_course found by the `where` argument doesn't exist, create a new mdl_course with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_courseCreateInput, mdl_courseUncheckedCreateInput>
     /**
      * In case the mdl_course was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_courseUpdateInput, mdl_courseUncheckedUpdateInput>
   }
 
@@ -2109,21 +2501,18 @@ export namespace Prisma {
   /**
    * mdl_course delete
    */
-  export type mdl_courseDeleteArgs = {
+  export type mdl_courseDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
     /**
      * Filter which mdl_course to delete.
-     * 
-    **/
+     */
     where: mdl_courseWhereUniqueInput
   }
 
@@ -2131,29 +2520,68 @@ export namespace Prisma {
   /**
    * mdl_course deleteMany
    */
-  export type mdl_courseDeleteManyArgs = {
+  export type mdl_courseDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_courses to delete
-     * 
-    **/
+     */
     where?: mdl_courseWhereInput
+  }
+
+
+  /**
+   * mdl_course.custom_data
+   */
+  export type mdl_course$custom_dataArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the mdl_customfield_data
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
+    where?: mdl_customfield_dataWhereInput
+    orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
+    cursor?: mdl_customfield_dataWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<Mdl_customfield_dataScalarFieldEnum>
+  }
+
+
+  /**
+   * mdl_course.context
+   */
+  export type mdl_course$contextArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the mdl_context
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
+    where?: mdl_contextWhereInput
+    orderBy?: Enumerable<mdl_contextOrderByWithRelationInput>
+    cursor?: mdl_contextWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<Mdl_contextScalarFieldEnum>
   }
 
 
   /**
    * mdl_course without action
    */
-  export type mdl_courseArgs = {
+  export type mdl_courseArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course
-     * 
-    **/
-    select?: mdl_courseSelect | null
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_courseInclude | null
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
   }
 
 
@@ -2230,39 +2658,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_course_categoriesAggregateArgs = {
+  export type Mdl_course_categoriesAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_course_categories to aggregate.
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_course_categories to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_course_categoriesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_course_categoriesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_course_categories from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_course_categories.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -2307,10 +2730,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_course_categoriesGroupByArgs = {
+  export type Mdl_course_categoriesGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_course_categoriesWhereInput
     orderBy?: Enumerable<mdl_course_categoriesOrderByWithAggregationInput>
-    by: Array<Mdl_course_categoriesScalarFieldEnum>
+    by: Mdl_course_categoriesScalarFieldEnum[]
     having?: mdl_course_categoriesScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -2333,7 +2756,7 @@ export namespace Prisma {
     _max: Mdl_course_categoriesMaxAggregateOutputType | null
   }
 
-  type GetMdl_course_categoriesGroupByPayload<T extends Mdl_course_categoriesGroupByArgs> = PrismaPromise<
+  type GetMdl_course_categoriesGroupByPayload<T extends Mdl_course_categoriesGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_course_categoriesGroupByOutputType, T['by']> &
         {
@@ -2347,46 +2770,35 @@ export namespace Prisma {
     >
 
 
-  export type mdl_course_categoriesSelect = {
+  export type mdl_course_categoriesSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     visible?: boolean
-    courses?: boolean | mdl_courseFindManyArgs
-    _count?: boolean | Mdl_course_categoriesCountOutputTypeArgs
+    courses?: boolean | mdl_course_categories$coursesArgs<ExtArgs>
+    _count?: boolean | Mdl_course_categoriesCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_course_categories"]>
+
+  export type mdl_course_categoriesSelectScalar = {
+    id?: boolean
+    name?: boolean
+    visible?: boolean
+  }
+
+  export type mdl_course_categoriesInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    courses?: boolean | mdl_course_categories$coursesArgs<ExtArgs>
+    _count?: boolean | Mdl_course_categoriesCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type mdl_course_categoriesInclude = {
-    courses?: boolean | mdl_courseFindManyArgs
-    _count?: boolean | Mdl_course_categoriesCountOutputTypeArgs
-  } 
+  type mdl_course_categoriesGetPayload<S extends boolean | null | undefined | mdl_course_categoriesArgs> = $Types.GetResult<mdl_course_categoriesPayload, S>
 
-  export type mdl_course_categoriesGetPayload<S extends boolean | null | undefined | mdl_course_categoriesArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_course_categories :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_course_categoriesArgs | mdl_course_categoriesFindManyArgs)
-    ? mdl_course_categories  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'courses' ? Array < mdl_courseGetPayload<S['include'][P]>>  :
-        P extends '_count' ? Mdl_course_categoriesCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_course_categoriesArgs | mdl_course_categoriesFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'courses' ? Array < mdl_courseGetPayload<S['select'][P]>>  :
-        P extends '_count' ? Mdl_course_categoriesCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof mdl_course_categories ? mdl_course_categories[P] : never
-  } 
-      : mdl_course_categories
-
-
-  type mdl_course_categoriesCountArgs = Merge<
+  type mdl_course_categoriesCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_course_categoriesFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_course_categoriesCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_course_categoriesDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_course_categoriesDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_course_categories'], meta: { name: 'mdl_course_categories' } }
     /**
      * Find zero or one Mdl_course_categories that matches the filter.
      * @param {mdl_course_categoriesFindUniqueArgs} args - Arguments to find a Mdl_course_categories
@@ -2398,9 +2810,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_course_categoriesFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_course_categoriesFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_course_categories'> extends True ? Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>> : Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T> | null, null>
+    findUnique<T extends mdl_course_categoriesFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_course_categoriesFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_course_categories'> extends True ? Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_course_categories that matches the filter or throw an error  with `error.code='P2025'` 
@@ -2414,9 +2826,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_course_categoriesFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_course_categoriesFindUniqueOrThrowArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_course_categoriesFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_course_categoriesFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_course_categories that matches the filter.
@@ -2431,9 +2843,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_course_categoriesFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_course_categoriesFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_course_categories'> extends True ? Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>> : Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T> | null, null>
+    findFirst<T extends mdl_course_categoriesFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_course_categoriesFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_course_categories'> extends True ? Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_course_categories that matches the filter or
@@ -2449,9 +2861,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_course_categoriesFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_course_categoriesFindFirstOrThrowArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    findFirstOrThrow<T extends mdl_course_categoriesFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_course_categoriesFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_course_categories that matches the filter.
@@ -2469,9 +2881,9 @@ export namespace Prisma {
      * const mdl_course_categoriesWithIdOnly = await prisma.mdl_course_categories.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_course_categoriesFindManyArgs>(
-      args?: SelectSubset<T, mdl_course_categoriesFindManyArgs>
-    ): PrismaPromise<Array<mdl_course_categoriesGetPayload<T>>>
+    findMany<T extends mdl_course_categoriesFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_course_categoriesFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_course_categories.
@@ -2485,9 +2897,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_course_categoriesCreateArgs>(
-      args: SelectSubset<T, mdl_course_categoriesCreateArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    create<T extends mdl_course_categoriesCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_course_categoriesCreateArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_course_categories.
@@ -2501,9 +2913,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_course_categoriesCreateManyArgs>(
-      args?: SelectSubset<T, mdl_course_categoriesCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_course_categoriesCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_course_categoriesCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_course_categories.
@@ -2517,9 +2929,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_course_categoriesDeleteArgs>(
-      args: SelectSubset<T, mdl_course_categoriesDeleteArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    delete<T extends mdl_course_categoriesDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_course_categoriesDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_course_categories.
@@ -2536,9 +2948,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_course_categoriesUpdateArgs>(
-      args: SelectSubset<T, mdl_course_categoriesUpdateArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    update<T extends mdl_course_categoriesUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_course_categoriesUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_course_categories.
@@ -2552,9 +2964,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_course_categoriesDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_course_categoriesDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_course_categoriesDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_course_categoriesDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_course_categories.
@@ -2573,9 +2985,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_course_categoriesUpdateManyArgs>(
-      args: SelectSubset<T, mdl_course_categoriesUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_course_categoriesUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_course_categoriesUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_course_categories.
@@ -2594,9 +3006,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_course_categoriesUpsertArgs>(
-      args: SelectSubset<T, mdl_course_categoriesUpsertArgs>
-    ): Prisma__mdl_course_categoriesClient<mdl_course_categoriesGetPayload<T>>
+    upsert<T extends mdl_course_categoriesUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_course_categoriesUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_course_categoriesClient<$Types.GetResult<mdl_course_categoriesPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_course_categories.
@@ -2613,8 +3025,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_course_categoriesCountArgs>(
       args?: Subset<T, mdl_course_categoriesCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_course_categoriesCountAggregateOutputType>
@@ -2645,7 +3057,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_course_categoriesAggregateArgs>(args: Subset<T, Mdl_course_categoriesAggregateArgs>): PrismaPromise<GetMdl_course_categoriesAggregateType<T>>
+    aggregate<T extends Mdl_course_categoriesAggregateArgs>(args: Subset<T, Mdl_course_categoriesAggregateArgs>): Prisma.PrismaPromise<GetMdl_course_categoriesAggregateType<T>>
 
     /**
      * Group by Mdl_course_categories.
@@ -2722,7 +3134,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_course_categoriesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_course_categoriesGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_course_categoriesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_course_categoriesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -2732,10 +3144,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_course_categoriesClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_course_categoriesClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -2746,10 +3156,10 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    courses<T extends mdl_courseFindManyArgs= {}>(args?: Subset<T, mdl_courseFindManyArgs>): PrismaPromise<Array<mdl_courseGetPayload<T>>| Null>;
+    courses<T extends mdl_course_categories$coursesArgs<ExtArgs> = {}>(args?: Subset<T, mdl_course_categories$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -2781,28 +3191,25 @@ export namespace Prisma {
   /**
    * mdl_course_categories base type for findUnique actions
    */
-  export type mdl_course_categoriesFindUniqueArgsBase = {
+  export type mdl_course_categoriesFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course_categories to fetch.
-     * 
-    **/
+     */
     where: mdl_course_categoriesWhereUniqueInput
   }
 
   /**
-   * mdl_course_categories: findUnique
+   * mdl_course_categories findUnique
    */
-  export interface mdl_course_categoriesFindUniqueArgs extends mdl_course_categoriesFindUniqueArgsBase {
+  export interface mdl_course_categoriesFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_course_categoriesFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -2814,21 +3221,18 @@ export namespace Prisma {
   /**
    * mdl_course_categories findUniqueOrThrow
    */
-  export type mdl_course_categoriesFindUniqueOrThrowArgs = {
+  export type mdl_course_categoriesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course_categories to fetch.
-     * 
-    **/
+     */
     where: mdl_course_categoriesWhereUniqueInput
   }
 
@@ -2836,63 +3240,55 @@ export namespace Prisma {
   /**
    * mdl_course_categories base type for findFirst actions
    */
-  export type mdl_course_categoriesFindFirstArgsBase = {
+  export type mdl_course_categoriesFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course_categories to fetch.
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_course_categories to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_course_categoriesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_course_categories.
-     * 
-    **/
+     */
     cursor?: mdl_course_categoriesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_course_categories from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_course_categories.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_course_categories.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_course_categoriesScalarFieldEnum>
   }
 
   /**
-   * mdl_course_categories: findFirst
+   * mdl_course_categories findFirst
    */
-  export interface mdl_course_categoriesFindFirstArgs extends mdl_course_categoriesFindFirstArgsBase {
+  export interface mdl_course_categoriesFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_course_categoriesFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -2904,56 +3300,48 @@ export namespace Prisma {
   /**
    * mdl_course_categories findFirstOrThrow
    */
-  export type mdl_course_categoriesFindFirstOrThrowArgs = {
+  export type mdl_course_categoriesFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course_categories to fetch.
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_course_categories to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_course_categoriesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_course_categories.
-     * 
-    **/
+     */
     cursor?: mdl_course_categoriesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_course_categories from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_course_categories.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_course_categories.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_course_categoriesScalarFieldEnum>
   }
 
@@ -2961,49 +3349,42 @@ export namespace Prisma {
   /**
    * mdl_course_categories findMany
    */
-  export type mdl_course_categoriesFindManyArgs = {
+  export type mdl_course_categoriesFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_course_categories to fetch.
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_course_categories to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_course_categoriesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_course_categories.
-     * 
-    **/
+     */
     cursor?: mdl_course_categoriesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_course_categories from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_course_categories.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_course_categoriesScalarFieldEnum>
   }
@@ -3012,21 +3393,18 @@ export namespace Prisma {
   /**
    * mdl_course_categories create
    */
-  export type mdl_course_categoriesCreateArgs = {
+  export type mdl_course_categoriesCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_course_categories.
-     * 
-    **/
+     */
     data: XOR<mdl_course_categoriesCreateInput, mdl_course_categoriesUncheckedCreateInput>
   }
 
@@ -3034,11 +3412,10 @@ export namespace Prisma {
   /**
    * mdl_course_categories createMany
    */
-  export type mdl_course_categoriesCreateManyArgs = {
+  export type mdl_course_categoriesCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_course_categories.
-     * 
-    **/
+     */
     data: Enumerable<mdl_course_categoriesCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -3047,26 +3424,22 @@ export namespace Prisma {
   /**
    * mdl_course_categories update
    */
-  export type mdl_course_categoriesUpdateArgs = {
+  export type mdl_course_categoriesUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_course_categories.
-     * 
-    **/
+     */
     data: XOR<mdl_course_categoriesUpdateInput, mdl_course_categoriesUncheckedUpdateInput>
     /**
      * Choose, which mdl_course_categories to update.
-     * 
-    **/
+     */
     where: mdl_course_categoriesWhereUniqueInput
   }
 
@@ -3074,16 +3447,14 @@ export namespace Prisma {
   /**
    * mdl_course_categories updateMany
    */
-  export type mdl_course_categoriesUpdateManyArgs = {
+  export type mdl_course_categoriesUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_course_categories.
-     * 
-    **/
+     */
     data: XOR<mdl_course_categoriesUpdateManyMutationInput, mdl_course_categoriesUncheckedUpdateManyInput>
     /**
      * Filter which mdl_course_categories to update
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
   }
 
@@ -3091,31 +3462,26 @@ export namespace Prisma {
   /**
    * mdl_course_categories upsert
    */
-  export type mdl_course_categoriesUpsertArgs = {
+  export type mdl_course_categoriesUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_course_categories to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_course_categoriesWhereUniqueInput
     /**
      * In case the mdl_course_categories found by the `where` argument doesn't exist, create a new mdl_course_categories with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_course_categoriesCreateInput, mdl_course_categoriesUncheckedCreateInput>
     /**
      * In case the mdl_course_categories was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_course_categoriesUpdateInput, mdl_course_categoriesUncheckedUpdateInput>
   }
 
@@ -3123,21 +3489,18 @@ export namespace Prisma {
   /**
    * mdl_course_categories delete
    */
-  export type mdl_course_categoriesDeleteArgs = {
+  export type mdl_course_categoriesDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
     /**
      * Filter which mdl_course_categories to delete.
-     * 
-    **/
+     */
     where: mdl_course_categoriesWhereUniqueInput
   }
 
@@ -3145,29 +3508,47 @@ export namespace Prisma {
   /**
    * mdl_course_categories deleteMany
    */
-  export type mdl_course_categoriesDeleteManyArgs = {
+  export type mdl_course_categoriesDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_course_categories to delete
-     * 
-    **/
+     */
     where?: mdl_course_categoriesWhereInput
+  }
+
+
+  /**
+   * mdl_course_categories.courses
+   */
+  export type mdl_course_categories$coursesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the mdl_course
+     */
+    select?: mdl_courseSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: mdl_courseInclude<ExtArgs> | null
+    where?: mdl_courseWhereInput
+    orderBy?: Enumerable<mdl_courseOrderByWithRelationInput>
+    cursor?: mdl_courseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<Mdl_courseScalarFieldEnum>
   }
 
 
   /**
    * mdl_course_categories without action
    */
-  export type mdl_course_categoriesArgs = {
+  export type mdl_course_categoriesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_course_categories
-     * 
-    **/
-    select?: mdl_course_categoriesSelect | null
+     */
+    select?: mdl_course_categoriesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_course_categoriesInclude | null
+     */
+    include?: mdl_course_categoriesInclude<ExtArgs> | null
   }
 
 
@@ -3248,39 +3629,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_contextAggregateArgs = {
+  export type Mdl_contextAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_context to aggregate.
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_contexts to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_contextOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_contextWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_contexts from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_contexts.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -3325,10 +3701,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_contextGroupByArgs = {
+  export type Mdl_contextGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_contextWhereInput
     orderBy?: Enumerable<mdl_contextOrderByWithAggregationInput>
-    by: Array<Mdl_contextScalarFieldEnum>
+    by: Mdl_contextScalarFieldEnum[]
     having?: mdl_contextScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -3351,7 +3727,7 @@ export namespace Prisma {
     _max: Mdl_contextMaxAggregateOutputType | null
   }
 
-  type GetMdl_contextGroupByPayload<T extends Mdl_contextGroupByArgs> = PrismaPromise<
+  type GetMdl_contextGroupByPayload<T extends Mdl_contextGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_contextGroupByOutputType, T['by']> &
         {
@@ -3365,50 +3741,37 @@ export namespace Prisma {
     >
 
 
-  export type mdl_contextSelect = {
+  export type mdl_contextSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     instanceid?: boolean
     contextlevel?: boolean
-    course?: boolean | mdl_courseArgs
-    files?: boolean | mdl_filesFindManyArgs
-    _count?: boolean | Mdl_contextCountOutputTypeArgs
+    course?: boolean | mdl_courseArgs<ExtArgs>
+    files?: boolean | mdl_context$filesArgs<ExtArgs>
+    _count?: boolean | Mdl_contextCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_context"]>
+
+  export type mdl_contextSelectScalar = {
+    id?: boolean
+    instanceid?: boolean
+    contextlevel?: boolean
+  }
+
+  export type mdl_contextInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    course?: boolean | mdl_courseArgs<ExtArgs>
+    files?: boolean | mdl_context$filesArgs<ExtArgs>
+    _count?: boolean | Mdl_contextCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type mdl_contextInclude = {
-    course?: boolean | mdl_courseArgs
-    files?: boolean | mdl_filesFindManyArgs
-    _count?: boolean | Mdl_contextCountOutputTypeArgs
-  } 
+  type mdl_contextGetPayload<S extends boolean | null | undefined | mdl_contextArgs> = $Types.GetResult<mdl_contextPayload, S>
 
-  export type mdl_contextGetPayload<S extends boolean | null | undefined | mdl_contextArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_context :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_contextArgs | mdl_contextFindManyArgs)
-    ? mdl_context  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'course' ? mdl_courseGetPayload<S['include'][P]> :
-        P extends 'files' ? Array < mdl_filesGetPayload<S['include'][P]>>  :
-        P extends '_count' ? Mdl_contextCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_contextArgs | mdl_contextFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'course' ? mdl_courseGetPayload<S['select'][P]> :
-        P extends 'files' ? Array < mdl_filesGetPayload<S['select'][P]>>  :
-        P extends '_count' ? Mdl_contextCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof mdl_context ? mdl_context[P] : never
-  } 
-      : mdl_context
-
-
-  type mdl_contextCountArgs = Merge<
+  type mdl_contextCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_contextFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_contextCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_contextDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_contextDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_context'], meta: { name: 'mdl_context' } }
     /**
      * Find zero or one Mdl_context that matches the filter.
      * @param {mdl_contextFindUniqueArgs} args - Arguments to find a Mdl_context
@@ -3420,9 +3783,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_contextFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_contextFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_context'> extends True ? Prisma__mdl_contextClient<mdl_contextGetPayload<T>> : Prisma__mdl_contextClient<mdl_contextGetPayload<T> | null, null>
+    findUnique<T extends mdl_contextFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_contextFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_context'> extends True ? Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_context that matches the filter or throw an error  with `error.code='P2025'` 
@@ -3436,9 +3799,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_contextFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_contextFindUniqueOrThrowArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_contextFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_contextFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_context that matches the filter.
@@ -3453,9 +3816,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_contextFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_contextFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_context'> extends True ? Prisma__mdl_contextClient<mdl_contextGetPayload<T>> : Prisma__mdl_contextClient<mdl_contextGetPayload<T> | null, null>
+    findFirst<T extends mdl_contextFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_contextFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_context'> extends True ? Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_context that matches the filter or
@@ -3471,9 +3834,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_contextFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_contextFindFirstOrThrowArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    findFirstOrThrow<T extends mdl_contextFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_contextFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_contexts that matches the filter.
@@ -3491,9 +3854,9 @@ export namespace Prisma {
      * const mdl_contextWithIdOnly = await prisma.mdl_context.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_contextFindManyArgs>(
-      args?: SelectSubset<T, mdl_contextFindManyArgs>
-    ): PrismaPromise<Array<mdl_contextGetPayload<T>>>
+    findMany<T extends mdl_contextFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_contextFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_context.
@@ -3507,9 +3870,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_contextCreateArgs>(
-      args: SelectSubset<T, mdl_contextCreateArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    create<T extends mdl_contextCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_contextCreateArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_contexts.
@@ -3523,9 +3886,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_contextCreateManyArgs>(
-      args?: SelectSubset<T, mdl_contextCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_contextCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_contextCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_context.
@@ -3539,9 +3902,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_contextDeleteArgs>(
-      args: SelectSubset<T, mdl_contextDeleteArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    delete<T extends mdl_contextDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_contextDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_context.
@@ -3558,9 +3921,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_contextUpdateArgs>(
-      args: SelectSubset<T, mdl_contextUpdateArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    update<T extends mdl_contextUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_contextUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_contexts.
@@ -3574,9 +3937,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_contextDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_contextDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_contextDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_contextDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_contexts.
@@ -3595,9 +3958,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_contextUpdateManyArgs>(
-      args: SelectSubset<T, mdl_contextUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_contextUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_contextUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_context.
@@ -3616,9 +3979,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_contextUpsertArgs>(
-      args: SelectSubset<T, mdl_contextUpsertArgs>
-    ): Prisma__mdl_contextClient<mdl_contextGetPayload<T>>
+    upsert<T extends mdl_contextUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_contextUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_contexts.
@@ -3635,8 +3998,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_contextCountArgs>(
       args?: Subset<T, mdl_contextCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_contextCountAggregateOutputType>
@@ -3667,7 +4030,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_contextAggregateArgs>(args: Subset<T, Mdl_contextAggregateArgs>): PrismaPromise<GetMdl_contextAggregateType<T>>
+    aggregate<T extends Mdl_contextAggregateArgs>(args: Subset<T, Mdl_contextAggregateArgs>): Prisma.PrismaPromise<GetMdl_contextAggregateType<T>>
 
     /**
      * Group by Mdl_context.
@@ -3744,7 +4107,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_contextGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_contextGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_contextGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_contextGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -3754,10 +4117,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_contextClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_contextClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -3768,12 +4129,12 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    course<T extends mdl_courseArgs= {}>(args?: Subset<T, mdl_courseArgs>): Prisma__mdl_courseClient<mdl_courseGetPayload<T> | Null>;
+    course<T extends mdl_courseArgs<ExtArgs> = {}>(args?: Subset<T, mdl_courseArgs<ExtArgs>>): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    files<T extends mdl_filesFindManyArgs= {}>(args?: Subset<T, mdl_filesFindManyArgs>): PrismaPromise<Array<mdl_filesGetPayload<T>>| Null>;
+    files<T extends mdl_context$filesArgs<ExtArgs> = {}>(args?: Subset<T, mdl_context$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -3805,28 +4166,25 @@ export namespace Prisma {
   /**
    * mdl_context base type for findUnique actions
    */
-  export type mdl_contextFindUniqueArgsBase = {
+  export type mdl_contextFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter, which mdl_context to fetch.
-     * 
-    **/
+     */
     where: mdl_contextWhereUniqueInput
   }
 
   /**
-   * mdl_context: findUnique
+   * mdl_context findUnique
    */
-  export interface mdl_contextFindUniqueArgs extends mdl_contextFindUniqueArgsBase {
+  export interface mdl_contextFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_contextFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -3838,21 +4196,18 @@ export namespace Prisma {
   /**
    * mdl_context findUniqueOrThrow
    */
-  export type mdl_contextFindUniqueOrThrowArgs = {
+  export type mdl_contextFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter, which mdl_context to fetch.
-     * 
-    **/
+     */
     where: mdl_contextWhereUniqueInput
   }
 
@@ -3860,63 +4215,55 @@ export namespace Prisma {
   /**
    * mdl_context base type for findFirst actions
    */
-  export type mdl_contextFindFirstArgsBase = {
+  export type mdl_contextFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter, which mdl_context to fetch.
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_contexts to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_contextOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_contexts.
-     * 
-    **/
+     */
     cursor?: mdl_contextWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_contexts from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_contexts.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_contexts.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_contextScalarFieldEnum>
   }
 
   /**
-   * mdl_context: findFirst
+   * mdl_context findFirst
    */
-  export interface mdl_contextFindFirstArgs extends mdl_contextFindFirstArgsBase {
+  export interface mdl_contextFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_contextFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -3928,56 +4275,48 @@ export namespace Prisma {
   /**
    * mdl_context findFirstOrThrow
    */
-  export type mdl_contextFindFirstOrThrowArgs = {
+  export type mdl_contextFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter, which mdl_context to fetch.
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_contexts to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_contextOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_contexts.
-     * 
-    **/
+     */
     cursor?: mdl_contextWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_contexts from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_contexts.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_contexts.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_contextScalarFieldEnum>
   }
 
@@ -3985,49 +4324,42 @@ export namespace Prisma {
   /**
    * mdl_context findMany
    */
-  export type mdl_contextFindManyArgs = {
+  export type mdl_contextFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter, which mdl_contexts to fetch.
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_contexts to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_contextOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_contexts.
-     * 
-    **/
+     */
     cursor?: mdl_contextWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_contexts from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_contexts.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_contextScalarFieldEnum>
   }
@@ -4036,21 +4368,18 @@ export namespace Prisma {
   /**
    * mdl_context create
    */
-  export type mdl_contextCreateArgs = {
+  export type mdl_contextCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_context.
-     * 
-    **/
+     */
     data: XOR<mdl_contextCreateInput, mdl_contextUncheckedCreateInput>
   }
 
@@ -4058,11 +4387,10 @@ export namespace Prisma {
   /**
    * mdl_context createMany
    */
-  export type mdl_contextCreateManyArgs = {
+  export type mdl_contextCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_contexts.
-     * 
-    **/
+     */
     data: Enumerable<mdl_contextCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -4071,26 +4399,22 @@ export namespace Prisma {
   /**
    * mdl_context update
    */
-  export type mdl_contextUpdateArgs = {
+  export type mdl_contextUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_context.
-     * 
-    **/
+     */
     data: XOR<mdl_contextUpdateInput, mdl_contextUncheckedUpdateInput>
     /**
      * Choose, which mdl_context to update.
-     * 
-    **/
+     */
     where: mdl_contextWhereUniqueInput
   }
 
@@ -4098,16 +4422,14 @@ export namespace Prisma {
   /**
    * mdl_context updateMany
    */
-  export type mdl_contextUpdateManyArgs = {
+  export type mdl_contextUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_contexts.
-     * 
-    **/
+     */
     data: XOR<mdl_contextUpdateManyMutationInput, mdl_contextUncheckedUpdateManyInput>
     /**
      * Filter which mdl_contexts to update
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
   }
 
@@ -4115,31 +4437,26 @@ export namespace Prisma {
   /**
    * mdl_context upsert
    */
-  export type mdl_contextUpsertArgs = {
+  export type mdl_contextUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_context to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_contextWhereUniqueInput
     /**
      * In case the mdl_context found by the `where` argument doesn't exist, create a new mdl_context with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_contextCreateInput, mdl_contextUncheckedCreateInput>
     /**
      * In case the mdl_context was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_contextUpdateInput, mdl_contextUncheckedUpdateInput>
   }
 
@@ -4147,21 +4464,18 @@ export namespace Prisma {
   /**
    * mdl_context delete
    */
-  export type mdl_contextDeleteArgs = {
+  export type mdl_contextDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
     /**
      * Filter which mdl_context to delete.
-     * 
-    **/
+     */
     where: mdl_contextWhereUniqueInput
   }
 
@@ -4169,29 +4483,47 @@ export namespace Prisma {
   /**
    * mdl_context deleteMany
    */
-  export type mdl_contextDeleteManyArgs = {
+  export type mdl_contextDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_contexts to delete
-     * 
-    **/
+     */
     where?: mdl_contextWhereInput
+  }
+
+
+  /**
+   * mdl_context.files
+   */
+  export type mdl_context$filesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the mdl_files
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
+    where?: mdl_filesWhereInput
+    orderBy?: Enumerable<mdl_filesOrderByWithRelationInput>
+    cursor?: mdl_filesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<Mdl_filesScalarFieldEnum>
   }
 
 
   /**
    * mdl_context without action
    */
-  export type mdl_contextArgs = {
+  export type mdl_contextArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_context
-     * 
-    **/
-    select?: mdl_contextSelect | null
+     */
+    select?: mdl_contextSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_contextInclude | null
+     */
+    include?: mdl_contextInclude<ExtArgs> | null
   }
 
 
@@ -4274,39 +4606,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_filesAggregateArgs = {
+  export type Mdl_filesAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_files to aggregate.
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_files to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_filesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_filesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_files from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_files.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -4351,10 +4678,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_filesGroupByArgs = {
+  export type Mdl_filesGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_filesWhereInput
     orderBy?: Enumerable<mdl_filesOrderByWithAggregationInput>
-    by: Array<Mdl_filesScalarFieldEnum>
+    by: Mdl_filesScalarFieldEnum[]
     having?: mdl_filesScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -4378,7 +4705,7 @@ export namespace Prisma {
     _max: Mdl_filesMaxAggregateOutputType | null
   }
 
-  type GetMdl_filesGroupByPayload<T extends Mdl_filesGroupByArgs> = PrismaPromise<
+  type GetMdl_filesGroupByPayload<T extends Mdl_filesGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_filesGroupByOutputType, T['by']> &
         {
@@ -4392,43 +4719,35 @@ export namespace Prisma {
     >
 
 
-  export type mdl_filesSelect = {
+  export type mdl_filesSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     contextid?: boolean
     filename?: boolean
     component?: boolean
-    context?: boolean | mdl_contextArgs
+    context?: boolean | mdl_contextArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_files"]>
+
+  export type mdl_filesSelectScalar = {
+    id?: boolean
+    contextid?: boolean
+    filename?: boolean
+    component?: boolean
+  }
+
+  export type mdl_filesInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    context?: boolean | mdl_contextArgs<ExtArgs>
   }
 
 
-  export type mdl_filesInclude = {
-    context?: boolean | mdl_contextArgs
-  } 
+  type mdl_filesGetPayload<S extends boolean | null | undefined | mdl_filesArgs> = $Types.GetResult<mdl_filesPayload, S>
 
-  export type mdl_filesGetPayload<S extends boolean | null | undefined | mdl_filesArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_files :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_filesArgs | mdl_filesFindManyArgs)
-    ? mdl_files  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'context' ? mdl_contextGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_filesArgs | mdl_filesFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'context' ? mdl_contextGetPayload<S['select'][P]> :  P extends keyof mdl_files ? mdl_files[P] : never
-  } 
-      : mdl_files
-
-
-  type mdl_filesCountArgs = Merge<
+  type mdl_filesCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_filesFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_filesCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_filesDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_filesDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_files'], meta: { name: 'mdl_files' } }
     /**
      * Find zero or one Mdl_files that matches the filter.
      * @param {mdl_filesFindUniqueArgs} args - Arguments to find a Mdl_files
@@ -4440,9 +4759,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_filesFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_filesFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_files'> extends True ? Prisma__mdl_filesClient<mdl_filesGetPayload<T>> : Prisma__mdl_filesClient<mdl_filesGetPayload<T> | null, null>
+    findUnique<T extends mdl_filesFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_filesFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_files'> extends True ? Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_files that matches the filter or throw an error  with `error.code='P2025'` 
@@ -4456,9 +4775,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_filesFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_filesFindUniqueOrThrowArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_filesFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_filesFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_files that matches the filter.
@@ -4473,9 +4792,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_filesFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_filesFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_files'> extends True ? Prisma__mdl_filesClient<mdl_filesGetPayload<T>> : Prisma__mdl_filesClient<mdl_filesGetPayload<T> | null, null>
+    findFirst<T extends mdl_filesFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_filesFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_files'> extends True ? Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_files that matches the filter or
@@ -4491,9 +4810,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_filesFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_filesFindFirstOrThrowArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    findFirstOrThrow<T extends mdl_filesFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_filesFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_files that matches the filter.
@@ -4511,9 +4830,9 @@ export namespace Prisma {
      * const mdl_filesWithIdOnly = await prisma.mdl_files.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_filesFindManyArgs>(
-      args?: SelectSubset<T, mdl_filesFindManyArgs>
-    ): PrismaPromise<Array<mdl_filesGetPayload<T>>>
+    findMany<T extends mdl_filesFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_filesFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_files.
@@ -4527,9 +4846,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_filesCreateArgs>(
-      args: SelectSubset<T, mdl_filesCreateArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    create<T extends mdl_filesCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_filesCreateArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_files.
@@ -4543,9 +4862,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_filesCreateManyArgs>(
-      args?: SelectSubset<T, mdl_filesCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_filesCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_filesCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_files.
@@ -4559,9 +4878,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_filesDeleteArgs>(
-      args: SelectSubset<T, mdl_filesDeleteArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    delete<T extends mdl_filesDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_filesDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_files.
@@ -4578,9 +4897,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_filesUpdateArgs>(
-      args: SelectSubset<T, mdl_filesUpdateArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    update<T extends mdl_filesUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_filesUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_files.
@@ -4594,9 +4913,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_filesDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_filesDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_filesDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_filesDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_files.
@@ -4615,9 +4934,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_filesUpdateManyArgs>(
-      args: SelectSubset<T, mdl_filesUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_filesUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_filesUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_files.
@@ -4636,9 +4955,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_filesUpsertArgs>(
-      args: SelectSubset<T, mdl_filesUpsertArgs>
-    ): Prisma__mdl_filesClient<mdl_filesGetPayload<T>>
+    upsert<T extends mdl_filesUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_filesUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_filesClient<$Types.GetResult<mdl_filesPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_files.
@@ -4655,8 +4974,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_filesCountArgs>(
       args?: Subset<T, mdl_filesCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_filesCountAggregateOutputType>
@@ -4687,7 +5006,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_filesAggregateArgs>(args: Subset<T, Mdl_filesAggregateArgs>): PrismaPromise<GetMdl_filesAggregateType<T>>
+    aggregate<T extends Mdl_filesAggregateArgs>(args: Subset<T, Mdl_filesAggregateArgs>): Prisma.PrismaPromise<GetMdl_filesAggregateType<T>>
 
     /**
      * Group by Mdl_files.
@@ -4764,7 +5083,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_filesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_filesGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_filesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_filesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -4774,10 +5093,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_filesClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_filesClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -4788,10 +5105,10 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    context<T extends mdl_contextArgs= {}>(args?: Subset<T, mdl_contextArgs>): Prisma__mdl_contextClient<mdl_contextGetPayload<T> | Null>;
+    context<T extends mdl_contextArgs<ExtArgs> = {}>(args?: Subset<T, mdl_contextArgs<ExtArgs>>): Prisma__mdl_contextClient<$Types.GetResult<mdl_contextPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
     private get _document();
     /**
@@ -4823,28 +5140,25 @@ export namespace Prisma {
   /**
    * mdl_files base type for findUnique actions
    */
-  export type mdl_filesFindUniqueArgsBase = {
+  export type mdl_filesFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_files to fetch.
-     * 
-    **/
+     */
     where: mdl_filesWhereUniqueInput
   }
 
   /**
-   * mdl_files: findUnique
+   * mdl_files findUnique
    */
-  export interface mdl_filesFindUniqueArgs extends mdl_filesFindUniqueArgsBase {
+  export interface mdl_filesFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_filesFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -4856,21 +5170,18 @@ export namespace Prisma {
   /**
    * mdl_files findUniqueOrThrow
    */
-  export type mdl_filesFindUniqueOrThrowArgs = {
+  export type mdl_filesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_files to fetch.
-     * 
-    **/
+     */
     where: mdl_filesWhereUniqueInput
   }
 
@@ -4878,63 +5189,55 @@ export namespace Prisma {
   /**
    * mdl_files base type for findFirst actions
    */
-  export type mdl_filesFindFirstArgsBase = {
+  export type mdl_filesFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_files to fetch.
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_files to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_filesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_files.
-     * 
-    **/
+     */
     cursor?: mdl_filesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_files from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_files.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_files.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_filesScalarFieldEnum>
   }
 
   /**
-   * mdl_files: findFirst
+   * mdl_files findFirst
    */
-  export interface mdl_filesFindFirstArgs extends mdl_filesFindFirstArgsBase {
+  export interface mdl_filesFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_filesFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -4946,56 +5249,48 @@ export namespace Prisma {
   /**
    * mdl_files findFirstOrThrow
    */
-  export type mdl_filesFindFirstOrThrowArgs = {
+  export type mdl_filesFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_files to fetch.
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_files to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_filesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_files.
-     * 
-    **/
+     */
     cursor?: mdl_filesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_files from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_files.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_files.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_filesScalarFieldEnum>
   }
 
@@ -5003,49 +5298,42 @@ export namespace Prisma {
   /**
    * mdl_files findMany
    */
-  export type mdl_filesFindManyArgs = {
+  export type mdl_filesFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter, which mdl_files to fetch.
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_files to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_filesOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_files.
-     * 
-    **/
+     */
     cursor?: mdl_filesWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_files from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_files.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_filesScalarFieldEnum>
   }
@@ -5054,21 +5342,18 @@ export namespace Prisma {
   /**
    * mdl_files create
    */
-  export type mdl_filesCreateArgs = {
+  export type mdl_filesCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_files.
-     * 
-    **/
+     */
     data: XOR<mdl_filesCreateInput, mdl_filesUncheckedCreateInput>
   }
 
@@ -5076,11 +5361,10 @@ export namespace Prisma {
   /**
    * mdl_files createMany
    */
-  export type mdl_filesCreateManyArgs = {
+  export type mdl_filesCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_files.
-     * 
-    **/
+     */
     data: Enumerable<mdl_filesCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -5089,26 +5373,22 @@ export namespace Prisma {
   /**
    * mdl_files update
    */
-  export type mdl_filesUpdateArgs = {
+  export type mdl_filesUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_files.
-     * 
-    **/
+     */
     data: XOR<mdl_filesUpdateInput, mdl_filesUncheckedUpdateInput>
     /**
      * Choose, which mdl_files to update.
-     * 
-    **/
+     */
     where: mdl_filesWhereUniqueInput
   }
 
@@ -5116,16 +5396,14 @@ export namespace Prisma {
   /**
    * mdl_files updateMany
    */
-  export type mdl_filesUpdateManyArgs = {
+  export type mdl_filesUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_files.
-     * 
-    **/
+     */
     data: XOR<mdl_filesUpdateManyMutationInput, mdl_filesUncheckedUpdateManyInput>
     /**
      * Filter which mdl_files to update
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
   }
 
@@ -5133,31 +5411,26 @@ export namespace Prisma {
   /**
    * mdl_files upsert
    */
-  export type mdl_filesUpsertArgs = {
+  export type mdl_filesUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_files to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_filesWhereUniqueInput
     /**
      * In case the mdl_files found by the `where` argument doesn't exist, create a new mdl_files with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_filesCreateInput, mdl_filesUncheckedCreateInput>
     /**
      * In case the mdl_files was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_filesUpdateInput, mdl_filesUncheckedUpdateInput>
   }
 
@@ -5165,21 +5438,18 @@ export namespace Prisma {
   /**
    * mdl_files delete
    */
-  export type mdl_filesDeleteArgs = {
+  export type mdl_filesDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
     /**
      * Filter which mdl_files to delete.
-     * 
-    **/
+     */
     where: mdl_filesWhereUniqueInput
   }
 
@@ -5187,11 +5457,10 @@ export namespace Prisma {
   /**
    * mdl_files deleteMany
    */
-  export type mdl_filesDeleteManyArgs = {
+  export type mdl_filesDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_files to delete
-     * 
-    **/
+     */
     where?: mdl_filesWhereInput
   }
 
@@ -5199,17 +5468,15 @@ export namespace Prisma {
   /**
    * mdl_files without action
    */
-  export type mdl_filesArgs = {
+  export type mdl_filesArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_files
-     * 
-    **/
-    select?: mdl_filesSelect | null
+     */
+    select?: mdl_filesSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_filesInclude | null
+     */
+    include?: mdl_filesInclude<ExtArgs> | null
   }
 
 
@@ -5312,39 +5579,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_customfield_dataAggregateArgs = {
+  export type Mdl_customfield_dataAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_customfield_data to aggregate.
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_customfield_dataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_data from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_data.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -5389,10 +5651,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_customfield_dataGroupByArgs = {
+  export type Mdl_customfield_dataGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_customfield_dataWhereInput
     orderBy?: Enumerable<mdl_customfield_dataOrderByWithAggregationInput>
-    by: Array<Mdl_customfield_dataScalarFieldEnum>
+    by: Mdl_customfield_dataScalarFieldEnum[]
     having?: mdl_customfield_dataScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -5418,7 +5680,7 @@ export namespace Prisma {
     _max: Mdl_customfield_dataMaxAggregateOutputType | null
   }
 
-  type GetMdl_customfield_dataGroupByPayload<T extends Mdl_customfield_dataGroupByArgs> = PrismaPromise<
+  type GetMdl_customfield_dataGroupByPayload<T extends Mdl_customfield_dataGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_customfield_dataGroupByOutputType, T['by']> &
         {
@@ -5432,49 +5694,41 @@ export namespace Prisma {
     >
 
 
-  export type mdl_customfield_dataSelect = {
+  export type mdl_customfield_dataSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     instanceid?: boolean
     fieldid?: boolean
     value?: boolean
     valueformat?: boolean
     charvalue?: boolean
-    field_name?: boolean | mdl_customfield_fieldArgs
-    course?: boolean | mdl_courseArgs
+    field_name?: boolean | mdl_customfield_fieldArgs<ExtArgs>
+    course?: boolean | mdl_courseArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_customfield_data"]>
+
+  export type mdl_customfield_dataSelectScalar = {
+    id?: boolean
+    instanceid?: boolean
+    fieldid?: boolean
+    value?: boolean
+    valueformat?: boolean
+    charvalue?: boolean
+  }
+
+  export type mdl_customfield_dataInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    field_name?: boolean | mdl_customfield_fieldArgs<ExtArgs>
+    course?: boolean | mdl_courseArgs<ExtArgs>
   }
 
 
-  export type mdl_customfield_dataInclude = {
-    field_name?: boolean | mdl_customfield_fieldArgs
-    course?: boolean | mdl_courseArgs
-  } 
+  type mdl_customfield_dataGetPayload<S extends boolean | null | undefined | mdl_customfield_dataArgs> = $Types.GetResult<mdl_customfield_dataPayload, S>
 
-  export type mdl_customfield_dataGetPayload<S extends boolean | null | undefined | mdl_customfield_dataArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_customfield_data :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_customfield_dataArgs | mdl_customfield_dataFindManyArgs)
-    ? mdl_customfield_data  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'field_name' ? mdl_customfield_fieldGetPayload<S['include'][P]> :
-        P extends 'course' ? mdl_courseGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_customfield_dataArgs | mdl_customfield_dataFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'field_name' ? mdl_customfield_fieldGetPayload<S['select'][P]> :
-        P extends 'course' ? mdl_courseGetPayload<S['select'][P]> :  P extends keyof mdl_customfield_data ? mdl_customfield_data[P] : never
-  } 
-      : mdl_customfield_data
-
-
-  type mdl_customfield_dataCountArgs = Merge<
+  type mdl_customfield_dataCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_customfield_dataFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_customfield_dataCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_customfield_dataDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_customfield_dataDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_customfield_data'], meta: { name: 'mdl_customfield_data' } }
     /**
      * Find zero or one Mdl_customfield_data that matches the filter.
      * @param {mdl_customfield_dataFindUniqueArgs} args - Arguments to find a Mdl_customfield_data
@@ -5486,9 +5740,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_customfield_dataFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_customfield_dataFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_customfield_data'> extends True ? Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>> : Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T> | null, null>
+    findUnique<T extends mdl_customfield_dataFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_customfield_dataFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_customfield_data'> extends True ? Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_customfield_data that matches the filter or throw an error  with `error.code='P2025'` 
@@ -5502,9 +5756,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_customfield_dataFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_customfield_dataFindUniqueOrThrowArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_customfield_dataFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_dataFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_customfield_data that matches the filter.
@@ -5519,9 +5773,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_customfield_dataFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_customfield_dataFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_customfield_data'> extends True ? Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>> : Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T> | null, null>
+    findFirst<T extends mdl_customfield_dataFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_customfield_dataFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_customfield_data'> extends True ? Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_customfield_data that matches the filter or
@@ -5537,9 +5791,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_customfield_dataFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_customfield_dataFindFirstOrThrowArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    findFirstOrThrow<T extends mdl_customfield_dataFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_dataFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_customfield_data that matches the filter.
@@ -5557,9 +5811,9 @@ export namespace Prisma {
      * const mdl_customfield_dataWithIdOnly = await prisma.mdl_customfield_data.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_customfield_dataFindManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_dataFindManyArgs>
-    ): PrismaPromise<Array<mdl_customfield_dataGetPayload<T>>>
+    findMany<T extends mdl_customfield_dataFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_dataFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_customfield_data.
@@ -5573,9 +5827,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_customfield_dataCreateArgs>(
-      args: SelectSubset<T, mdl_customfield_dataCreateArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    create<T extends mdl_customfield_dataCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_dataCreateArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_customfield_data.
@@ -5589,9 +5843,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_customfield_dataCreateManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_dataCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_customfield_dataCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_dataCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_customfield_data.
@@ -5605,9 +5859,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_customfield_dataDeleteArgs>(
-      args: SelectSubset<T, mdl_customfield_dataDeleteArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    delete<T extends mdl_customfield_dataDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_dataDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_customfield_data.
@@ -5624,9 +5878,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_customfield_dataUpdateArgs>(
-      args: SelectSubset<T, mdl_customfield_dataUpdateArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    update<T extends mdl_customfield_dataUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_dataUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_customfield_data.
@@ -5640,9 +5894,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_customfield_dataDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_dataDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_customfield_dataDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_dataDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_customfield_data.
@@ -5661,9 +5915,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_customfield_dataUpdateManyArgs>(
-      args: SelectSubset<T, mdl_customfield_dataUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_customfield_dataUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_dataUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_customfield_data.
@@ -5682,9 +5936,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_customfield_dataUpsertArgs>(
-      args: SelectSubset<T, mdl_customfield_dataUpsertArgs>
-    ): Prisma__mdl_customfield_dataClient<mdl_customfield_dataGetPayload<T>>
+    upsert<T extends mdl_customfield_dataUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_dataUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_dataClient<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_customfield_data.
@@ -5701,8 +5955,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_customfield_dataCountArgs>(
       args?: Subset<T, mdl_customfield_dataCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_customfield_dataCountAggregateOutputType>
@@ -5733,7 +5987,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_customfield_dataAggregateArgs>(args: Subset<T, Mdl_customfield_dataAggregateArgs>): PrismaPromise<GetMdl_customfield_dataAggregateType<T>>
+    aggregate<T extends Mdl_customfield_dataAggregateArgs>(args: Subset<T, Mdl_customfield_dataAggregateArgs>): Prisma.PrismaPromise<GetMdl_customfield_dataAggregateType<T>>
 
     /**
      * Group by Mdl_customfield_data.
@@ -5810,7 +6064,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_customfield_dataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_customfield_dataGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_customfield_dataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_customfield_dataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -5820,10 +6074,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_customfield_dataClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_customfield_dataClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -5834,12 +6086,12 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    field_name<T extends mdl_customfield_fieldArgs= {}>(args?: Subset<T, mdl_customfield_fieldArgs>): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T> | Null>;
+    field_name<T extends mdl_customfield_fieldArgs<ExtArgs> = {}>(args?: Subset<T, mdl_customfield_fieldArgs<ExtArgs>>): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
-    course<T extends mdl_courseArgs= {}>(args?: Subset<T, mdl_courseArgs>): Prisma__mdl_courseClient<mdl_courseGetPayload<T> | Null>;
+    course<T extends mdl_courseArgs<ExtArgs> = {}>(args?: Subset<T, mdl_courseArgs<ExtArgs>>): Prisma__mdl_courseClient<$Types.GetResult<mdl_coursePayload<ExtArgs>, T, 'findUnique', never> | Null, never, ExtArgs>;
 
     private get _document();
     /**
@@ -5871,28 +6123,25 @@ export namespace Prisma {
   /**
    * mdl_customfield_data base type for findUnique actions
    */
-  export type mdl_customfield_dataFindUniqueArgsBase = {
+  export type mdl_customfield_dataFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     where: mdl_customfield_dataWhereUniqueInput
   }
 
   /**
-   * mdl_customfield_data: findUnique
+   * mdl_customfield_data findUnique
    */
-  export interface mdl_customfield_dataFindUniqueArgs extends mdl_customfield_dataFindUniqueArgsBase {
+  export interface mdl_customfield_dataFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_customfield_dataFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -5904,21 +6153,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_data findUniqueOrThrow
    */
-  export type mdl_customfield_dataFindUniqueOrThrowArgs = {
+  export type mdl_customfield_dataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     where: mdl_customfield_dataWhereUniqueInput
   }
 
@@ -5926,63 +6172,55 @@ export namespace Prisma {
   /**
    * mdl_customfield_data base type for findFirst actions
    */
-  export type mdl_customfield_dataFindFirstArgsBase = {
+  export type mdl_customfield_dataFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_customfield_data.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_dataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_data from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_data.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_customfield_data.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_customfield_dataScalarFieldEnum>
   }
 
   /**
-   * mdl_customfield_data: findFirst
+   * mdl_customfield_data findFirst
    */
-  export interface mdl_customfield_dataFindFirstArgs extends mdl_customfield_dataFindFirstArgsBase {
+  export interface mdl_customfield_dataFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_customfield_dataFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -5994,56 +6232,48 @@ export namespace Prisma {
   /**
    * mdl_customfield_data findFirstOrThrow
    */
-  export type mdl_customfield_dataFindFirstOrThrowArgs = {
+  export type mdl_customfield_dataFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_customfield_data.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_dataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_data from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_data.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_customfield_data.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_customfield_dataScalarFieldEnum>
   }
 
@@ -6051,49 +6281,42 @@ export namespace Prisma {
   /**
    * mdl_customfield_data findMany
    */
-  export type mdl_customfield_dataFindManyArgs = {
+  export type mdl_customfield_dataFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_data to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_customfield_data.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_dataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_data from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_data.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_customfield_dataScalarFieldEnum>
   }
@@ -6102,21 +6325,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_data create
    */
-  export type mdl_customfield_dataCreateArgs = {
+  export type mdl_customfield_dataCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_customfield_data.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_dataCreateInput, mdl_customfield_dataUncheckedCreateInput>
   }
 
@@ -6124,11 +6344,10 @@ export namespace Prisma {
   /**
    * mdl_customfield_data createMany
    */
-  export type mdl_customfield_dataCreateManyArgs = {
+  export type mdl_customfield_dataCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_customfield_data.
-     * 
-    **/
+     */
     data: Enumerable<mdl_customfield_dataCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -6137,26 +6356,22 @@ export namespace Prisma {
   /**
    * mdl_customfield_data update
    */
-  export type mdl_customfield_dataUpdateArgs = {
+  export type mdl_customfield_dataUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_customfield_data.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_dataUpdateInput, mdl_customfield_dataUncheckedUpdateInput>
     /**
      * Choose, which mdl_customfield_data to update.
-     * 
-    **/
+     */
     where: mdl_customfield_dataWhereUniqueInput
   }
 
@@ -6164,16 +6379,14 @@ export namespace Prisma {
   /**
    * mdl_customfield_data updateMany
    */
-  export type mdl_customfield_dataUpdateManyArgs = {
+  export type mdl_customfield_dataUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_customfield_data.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_dataUpdateManyMutationInput, mdl_customfield_dataUncheckedUpdateManyInput>
     /**
      * Filter which mdl_customfield_data to update
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
   }
 
@@ -6181,31 +6394,26 @@ export namespace Prisma {
   /**
    * mdl_customfield_data upsert
    */
-  export type mdl_customfield_dataUpsertArgs = {
+  export type mdl_customfield_dataUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_customfield_data to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_customfield_dataWhereUniqueInput
     /**
      * In case the mdl_customfield_data found by the `where` argument doesn't exist, create a new mdl_customfield_data with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_customfield_dataCreateInput, mdl_customfield_dataUncheckedCreateInput>
     /**
      * In case the mdl_customfield_data was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_customfield_dataUpdateInput, mdl_customfield_dataUncheckedUpdateInput>
   }
 
@@ -6213,21 +6421,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_data delete
    */
-  export type mdl_customfield_dataDeleteArgs = {
+  export type mdl_customfield_dataDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
     /**
      * Filter which mdl_customfield_data to delete.
-     * 
-    **/
+     */
     where: mdl_customfield_dataWhereUniqueInput
   }
 
@@ -6235,11 +6440,10 @@ export namespace Prisma {
   /**
    * mdl_customfield_data deleteMany
    */
-  export type mdl_customfield_dataDeleteManyArgs = {
+  export type mdl_customfield_dataDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_customfield_data to delete
-     * 
-    **/
+     */
     where?: mdl_customfield_dataWhereInput
   }
 
@@ -6247,17 +6451,15 @@ export namespace Prisma {
   /**
    * mdl_customfield_data without action
    */
-  export type mdl_customfield_dataArgs = {
+  export type mdl_customfield_dataArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_data
-     * 
-    **/
-    select?: mdl_customfield_dataSelect | null
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_dataInclude | null
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
   }
 
 
@@ -6330,39 +6532,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type Mdl_customfield_fieldAggregateArgs = {
+  export type Mdl_customfield_fieldAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_customfield_field to aggregate.
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_fields to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_fieldOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: mdl_customfield_fieldWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_fields from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_fields.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -6407,10 +6604,10 @@ export namespace Prisma {
 
 
 
-  export type Mdl_customfield_fieldGroupByArgs = {
+  export type Mdl_customfield_fieldGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: mdl_customfield_fieldWhereInput
     orderBy?: Enumerable<mdl_customfield_fieldOrderByWithAggregationInput>
-    by: Array<Mdl_customfield_fieldScalarFieldEnum>
+    by: Mdl_customfield_fieldScalarFieldEnum[]
     having?: mdl_customfield_fieldScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -6433,7 +6630,7 @@ export namespace Prisma {
     _max: Mdl_customfield_fieldMaxAggregateOutputType | null
   }
 
-  type GetMdl_customfield_fieldGroupByPayload<T extends Mdl_customfield_fieldGroupByArgs> = PrismaPromise<
+  type GetMdl_customfield_fieldGroupByPayload<T extends Mdl_customfield_fieldGroupByArgs> = Prisma.PrismaPromise<
     Array<
       PickArray<Mdl_customfield_fieldGroupByOutputType, T['by']> &
         {
@@ -6447,46 +6644,35 @@ export namespace Prisma {
     >
 
 
-  export type mdl_customfield_fieldSelect = {
+  export type mdl_customfield_fieldSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     shortname?: boolean
     name?: boolean
-    datas?: boolean | mdl_customfield_dataFindManyArgs
-    _count?: boolean | Mdl_customfield_fieldCountOutputTypeArgs
+    datas?: boolean | mdl_customfield_field$datasArgs<ExtArgs>
+    _count?: boolean | Mdl_customfield_fieldCountOutputTypeArgs<ExtArgs>
+  }, ExtArgs["result"]["mdl_customfield_field"]>
+
+  export type mdl_customfield_fieldSelectScalar = {
+    id?: boolean
+    shortname?: boolean
+    name?: boolean
+  }
+
+  export type mdl_customfield_fieldInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    datas?: boolean | mdl_customfield_field$datasArgs<ExtArgs>
+    _count?: boolean | Mdl_customfield_fieldCountOutputTypeArgs<ExtArgs>
   }
 
 
-  export type mdl_customfield_fieldInclude = {
-    datas?: boolean | mdl_customfield_dataFindManyArgs
-    _count?: boolean | Mdl_customfield_fieldCountOutputTypeArgs
-  } 
+  type mdl_customfield_fieldGetPayload<S extends boolean | null | undefined | mdl_customfield_fieldArgs> = $Types.GetResult<mdl_customfield_fieldPayload, S>
 
-  export type mdl_customfield_fieldGetPayload<S extends boolean | null | undefined | mdl_customfield_fieldArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? mdl_customfield_field :
-    S extends undefined ? never :
-    S extends { include: any } & (mdl_customfield_fieldArgs | mdl_customfield_fieldFindManyArgs)
-    ? mdl_customfield_field  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'datas' ? Array < mdl_customfield_dataGetPayload<S['include'][P]>>  :
-        P extends '_count' ? Mdl_customfield_fieldCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (mdl_customfield_fieldArgs | mdl_customfield_fieldFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'datas' ? Array < mdl_customfield_dataGetPayload<S['select'][P]>>  :
-        P extends '_count' ? Mdl_customfield_fieldCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof mdl_customfield_field ? mdl_customfield_field[P] : never
-  } 
-      : mdl_customfield_field
-
-
-  type mdl_customfield_fieldCountArgs = Merge<
+  type mdl_customfield_fieldCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<mdl_customfield_fieldFindManyArgs, 'select' | 'include'> & {
       select?: Mdl_customfield_fieldCountAggregateInputType | true
     }
-  >
 
-  export interface mdl_customfield_fieldDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface mdl_customfield_fieldDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['mdl_customfield_field'], meta: { name: 'mdl_customfield_field' } }
     /**
      * Find zero or one Mdl_customfield_field that matches the filter.
      * @param {mdl_customfield_fieldFindUniqueArgs} args - Arguments to find a Mdl_customfield_field
@@ -6498,9 +6684,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends mdl_customfield_fieldFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, mdl_customfield_fieldFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_customfield_field'> extends True ? Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>> : Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T> | null, null>
+    findUnique<T extends mdl_customfield_fieldFindUniqueArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, mdl_customfield_fieldFindUniqueArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'mdl_customfield_field'> extends True ? Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findUnique', never>, never, ExtArgs> : Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findUnique', never> | null, null, ExtArgs>
 
     /**
      * Find one Mdl_customfield_field that matches the filter or throw an error  with `error.code='P2025'` 
@@ -6514,9 +6700,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends mdl_customfield_fieldFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, mdl_customfield_fieldFindUniqueOrThrowArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    findUniqueOrThrow<T extends mdl_customfield_fieldFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_fieldFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findUniqueOrThrow', never>, never, ExtArgs>
 
     /**
      * Find the first Mdl_customfield_field that matches the filter.
@@ -6531,9 +6717,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends mdl_customfield_fieldFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, mdl_customfield_fieldFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_customfield_field'> extends True ? Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>> : Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T> | null, null>
+    findFirst<T extends mdl_customfield_fieldFindFirstArgs<ExtArgs>, LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, mdl_customfield_fieldFindFirstArgs<ExtArgs>>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'mdl_customfield_field'> extends True ? Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findFirst', never>, never, ExtArgs> : Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findFirst', never> | null, null, ExtArgs>
 
     /**
      * Find the first Mdl_customfield_field that matches the filter or
@@ -6549,9 +6735,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirstOrThrow<T extends mdl_customfield_fieldFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, mdl_customfield_fieldFindFirstOrThrowArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    findFirstOrThrow<T extends mdl_customfield_fieldFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_fieldFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findFirstOrThrow', never>, never, ExtArgs>
 
     /**
      * Find zero or more Mdl_customfield_fields that matches the filter.
@@ -6569,9 +6755,9 @@ export namespace Prisma {
      * const mdl_customfield_fieldWithIdOnly = await prisma.mdl_customfield_field.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends mdl_customfield_fieldFindManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_fieldFindManyArgs>
-    ): PrismaPromise<Array<mdl_customfield_fieldGetPayload<T>>>
+    findMany<T extends mdl_customfield_fieldFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_fieldFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'findMany', never>>
 
     /**
      * Create a Mdl_customfield_field.
@@ -6585,9 +6771,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends mdl_customfield_fieldCreateArgs>(
-      args: SelectSubset<T, mdl_customfield_fieldCreateArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    create<T extends mdl_customfield_fieldCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_fieldCreateArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
      * Create many Mdl_customfield_fields.
@@ -6601,9 +6787,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends mdl_customfield_fieldCreateManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_fieldCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends mdl_customfield_fieldCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_fieldCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Mdl_customfield_field.
@@ -6617,9 +6803,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends mdl_customfield_fieldDeleteArgs>(
-      args: SelectSubset<T, mdl_customfield_fieldDeleteArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    delete<T extends mdl_customfield_fieldDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_fieldDeleteArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'delete', never>, never, ExtArgs>
 
     /**
      * Update one Mdl_customfield_field.
@@ -6636,9 +6822,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends mdl_customfield_fieldUpdateArgs>(
-      args: SelectSubset<T, mdl_customfield_fieldUpdateArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    update<T extends mdl_customfield_fieldUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_fieldUpdateArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'update', never>, never, ExtArgs>
 
     /**
      * Delete zero or more Mdl_customfield_fields.
@@ -6652,9 +6838,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends mdl_customfield_fieldDeleteManyArgs>(
-      args?: SelectSubset<T, mdl_customfield_fieldDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends mdl_customfield_fieldDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, mdl_customfield_fieldDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mdl_customfield_fields.
@@ -6673,9 +6859,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends mdl_customfield_fieldUpdateManyArgs>(
-      args: SelectSubset<T, mdl_customfield_fieldUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends mdl_customfield_fieldUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_fieldUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mdl_customfield_field.
@@ -6694,9 +6880,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends mdl_customfield_fieldUpsertArgs>(
-      args: SelectSubset<T, mdl_customfield_fieldUpsertArgs>
-    ): Prisma__mdl_customfield_fieldClient<mdl_customfield_fieldGetPayload<T>>
+    upsert<T extends mdl_customfield_fieldUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, mdl_customfield_fieldUpsertArgs<ExtArgs>>
+    ): Prisma__mdl_customfield_fieldClient<$Types.GetResult<mdl_customfield_fieldPayload<ExtArgs>, T, 'upsert', never>, never, ExtArgs>
 
     /**
      * Count the number of Mdl_customfield_fields.
@@ -6713,8 +6899,8 @@ export namespace Prisma {
     **/
     count<T extends mdl_customfield_fieldCountArgs>(
       args?: Subset<T, mdl_customfield_fieldCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], Mdl_customfield_fieldCountAggregateOutputType>
@@ -6745,7 +6931,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends Mdl_customfield_fieldAggregateArgs>(args: Subset<T, Mdl_customfield_fieldAggregateArgs>): PrismaPromise<GetMdl_customfield_fieldAggregateType<T>>
+    aggregate<T extends Mdl_customfield_fieldAggregateArgs>(args: Subset<T, Mdl_customfield_fieldAggregateArgs>): Prisma.PrismaPromise<GetMdl_customfield_fieldAggregateType<T>>
 
     /**
      * Group by Mdl_customfield_field.
@@ -6822,7 +7008,7 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, Mdl_customfield_fieldGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_customfield_fieldGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, Mdl_customfield_fieldGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMdl_customfield_fieldGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 
   }
 
@@ -6832,10 +7018,8 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__mdl_customfield_fieldClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
+  export class Prisma__mdl_customfield_fieldClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> implements Prisma.PrismaPromise<T> {
     private readonly _dmmf;
-    private readonly _fetcher;
     private readonly _queryType;
     private readonly _rootField;
     private readonly _clientMethod;
@@ -6846,10 +7030,10 @@ export namespace Prisma {
     private _isList;
     private _callsite;
     private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
-    datas<T extends mdl_customfield_dataFindManyArgs= {}>(args?: Subset<T, mdl_customfield_dataFindManyArgs>): PrismaPromise<Array<mdl_customfield_dataGetPayload<T>>| Null>;
+    datas<T extends mdl_customfield_field$datasArgs<ExtArgs> = {}>(args?: Subset<T, mdl_customfield_field$datasArgs<ExtArgs>>): Prisma.PrismaPromise<$Types.GetResult<mdl_customfield_dataPayload<ExtArgs>, T, 'findMany', never>| Null>;
 
     private get _document();
     /**
@@ -6881,28 +7065,25 @@ export namespace Prisma {
   /**
    * mdl_customfield_field base type for findUnique actions
    */
-  export type mdl_customfield_fieldFindUniqueArgsBase = {
+  export type mdl_customfield_fieldFindUniqueArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_field to fetch.
-     * 
-    **/
+     */
     where: mdl_customfield_fieldWhereUniqueInput
   }
 
   /**
-   * mdl_customfield_field: findUnique
+   * mdl_customfield_field findUnique
    */
-  export interface mdl_customfield_fieldFindUniqueArgs extends mdl_customfield_fieldFindUniqueArgsBase {
+  export interface mdl_customfield_fieldFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_customfield_fieldFindUniqueArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
@@ -6914,21 +7095,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_field findUniqueOrThrow
    */
-  export type mdl_customfield_fieldFindUniqueOrThrowArgs = {
+  export type mdl_customfield_fieldFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_field to fetch.
-     * 
-    **/
+     */
     where: mdl_customfield_fieldWhereUniqueInput
   }
 
@@ -6936,63 +7114,55 @@ export namespace Prisma {
   /**
    * mdl_customfield_field base type for findFirst actions
    */
-  export type mdl_customfield_fieldFindFirstArgsBase = {
+  export type mdl_customfield_fieldFindFirstArgsBase<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_field to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_fields to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_fieldOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_customfield_fields.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_fieldWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_fields from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_fields.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_customfield_fields.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_customfield_fieldScalarFieldEnum>
   }
 
   /**
-   * mdl_customfield_field: findFirst
+   * mdl_customfield_field findFirst
    */
-  export interface mdl_customfield_fieldFindFirstArgs extends mdl_customfield_fieldFindFirstArgsBase {
+  export interface mdl_customfield_fieldFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends mdl_customfield_fieldFindFirstArgsBase<ExtArgs> {
    /**
     * Throw an Error if query returns no results
     * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
@@ -7004,56 +7174,48 @@ export namespace Prisma {
   /**
    * mdl_customfield_field findFirstOrThrow
    */
-  export type mdl_customfield_fieldFindFirstOrThrowArgs = {
+  export type mdl_customfield_fieldFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_field to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_fields to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_fieldOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for mdl_customfield_fields.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_fieldWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_fields from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_fields.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of mdl_customfield_fields.
-     * 
-    **/
+     */
     distinct?: Enumerable<Mdl_customfield_fieldScalarFieldEnum>
   }
 
@@ -7061,49 +7223,42 @@ export namespace Prisma {
   /**
    * mdl_customfield_field findMany
    */
-  export type mdl_customfield_fieldFindManyArgs = {
+  export type mdl_customfield_fieldFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter, which mdl_customfield_fields to fetch.
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of mdl_customfield_fields to fetch.
-     * 
-    **/
+     */
     orderBy?: Enumerable<mdl_customfield_fieldOrderByWithRelationInput>
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing mdl_customfield_fields.
-     * 
-    **/
+     */
     cursor?: mdl_customfield_fieldWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` mdl_customfield_fields from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` mdl_customfield_fields.
-     * 
-    **/
+     */
     skip?: number
     distinct?: Enumerable<Mdl_customfield_fieldScalarFieldEnum>
   }
@@ -7112,21 +7267,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_field create
    */
-  export type mdl_customfield_fieldCreateArgs = {
+  export type mdl_customfield_fieldCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * The data needed to create a mdl_customfield_field.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_fieldCreateInput, mdl_customfield_fieldUncheckedCreateInput>
   }
 
@@ -7134,11 +7286,10 @@ export namespace Prisma {
   /**
    * mdl_customfield_field createMany
    */
-  export type mdl_customfield_fieldCreateManyArgs = {
+  export type mdl_customfield_fieldCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many mdl_customfield_fields.
-     * 
-    **/
+     */
     data: Enumerable<mdl_customfield_fieldCreateManyInput>
     skipDuplicates?: boolean
   }
@@ -7147,26 +7298,22 @@ export namespace Prisma {
   /**
    * mdl_customfield_field update
    */
-  export type mdl_customfield_fieldUpdateArgs = {
+  export type mdl_customfield_fieldUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * The data needed to update a mdl_customfield_field.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_fieldUpdateInput, mdl_customfield_fieldUncheckedUpdateInput>
     /**
      * Choose, which mdl_customfield_field to update.
-     * 
-    **/
+     */
     where: mdl_customfield_fieldWhereUniqueInput
   }
 
@@ -7174,16 +7321,14 @@ export namespace Prisma {
   /**
    * mdl_customfield_field updateMany
    */
-  export type mdl_customfield_fieldUpdateManyArgs = {
+  export type mdl_customfield_fieldUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update mdl_customfield_fields.
-     * 
-    **/
+     */
     data: XOR<mdl_customfield_fieldUpdateManyMutationInput, mdl_customfield_fieldUncheckedUpdateManyInput>
     /**
      * Filter which mdl_customfield_fields to update
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
   }
 
@@ -7191,31 +7336,26 @@ export namespace Prisma {
   /**
    * mdl_customfield_field upsert
    */
-  export type mdl_customfield_fieldUpsertArgs = {
+  export type mdl_customfield_fieldUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * The filter to search for the mdl_customfield_field to update in case it exists.
-     * 
-    **/
+     */
     where: mdl_customfield_fieldWhereUniqueInput
     /**
      * In case the mdl_customfield_field found by the `where` argument doesn't exist, create a new mdl_customfield_field with this data.
-     * 
-    **/
+     */
     create: XOR<mdl_customfield_fieldCreateInput, mdl_customfield_fieldUncheckedCreateInput>
     /**
      * In case the mdl_customfield_field was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<mdl_customfield_fieldUpdateInput, mdl_customfield_fieldUncheckedUpdateInput>
   }
 
@@ -7223,21 +7363,18 @@ export namespace Prisma {
   /**
    * mdl_customfield_field delete
    */
-  export type mdl_customfield_fieldDeleteArgs = {
+  export type mdl_customfield_fieldDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
     /**
      * Filter which mdl_customfield_field to delete.
-     * 
-    **/
+     */
     where: mdl_customfield_fieldWhereUniqueInput
   }
 
@@ -7245,29 +7382,47 @@ export namespace Prisma {
   /**
    * mdl_customfield_field deleteMany
    */
-  export type mdl_customfield_fieldDeleteManyArgs = {
+  export type mdl_customfield_fieldDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which mdl_customfield_fields to delete
-     * 
-    **/
+     */
     where?: mdl_customfield_fieldWhereInput
+  }
+
+
+  /**
+   * mdl_customfield_field.datas
+   */
+  export type mdl_customfield_field$datasArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the mdl_customfield_data
+     */
+    select?: mdl_customfield_dataSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: mdl_customfield_dataInclude<ExtArgs> | null
+    where?: mdl_customfield_dataWhereInput
+    orderBy?: Enumerable<mdl_customfield_dataOrderByWithRelationInput>
+    cursor?: mdl_customfield_dataWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<Mdl_customfield_dataScalarFieldEnum>
   }
 
 
   /**
    * mdl_customfield_field without action
    */
-  export type mdl_customfield_fieldArgs = {
+  export type mdl_customfield_fieldArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the mdl_customfield_field
-     * 
-    **/
-    select?: mdl_customfield_fieldSelect | null
+     */
+    select?: mdl_customfield_fieldSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: mdl_customfield_fieldInclude | null
+     */
+    include?: mdl_customfield_fieldInclude<ExtArgs> | null
   }
 
 
@@ -7276,16 +7431,14 @@ export namespace Prisma {
    * Enums
    */
 
-  // Based on
-  // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-
-  export const Mdl_contextScalarFieldEnum: {
-    id: 'id',
-    instanceid: 'instanceid',
-    contextlevel: 'contextlevel'
+  export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
+    Serializable: 'Serializable'
   };
 
-  export type Mdl_contextScalarFieldEnum = (typeof Mdl_contextScalarFieldEnum)[keyof typeof Mdl_contextScalarFieldEnum]
+  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
   export const Mdl_courseScalarFieldEnum: {
@@ -7310,6 +7463,25 @@ export namespace Prisma {
   export type Mdl_course_categoriesScalarFieldEnum = (typeof Mdl_course_categoriesScalarFieldEnum)[keyof typeof Mdl_course_categoriesScalarFieldEnum]
 
 
+  export const Mdl_contextScalarFieldEnum: {
+    id: 'id',
+    instanceid: 'instanceid',
+    contextlevel: 'contextlevel'
+  };
+
+  export type Mdl_contextScalarFieldEnum = (typeof Mdl_contextScalarFieldEnum)[keyof typeof Mdl_contextScalarFieldEnum]
+
+
+  export const Mdl_filesScalarFieldEnum: {
+    id: 'id',
+    contextid: 'contextid',
+    filename: 'filename',
+    component: 'component'
+  };
+
+  export type Mdl_filesScalarFieldEnum = (typeof Mdl_filesScalarFieldEnum)[keyof typeof Mdl_filesScalarFieldEnum]
+
+
   export const Mdl_customfield_dataScalarFieldEnum: {
     id: 'id',
     instanceid: 'instanceid',
@@ -7331,32 +7503,12 @@ export namespace Prisma {
   export type Mdl_customfield_fieldScalarFieldEnum = (typeof Mdl_customfield_fieldScalarFieldEnum)[keyof typeof Mdl_customfield_fieldScalarFieldEnum]
 
 
-  export const Mdl_filesScalarFieldEnum: {
-    id: 'id',
-    contextid: 'contextid',
-    filename: 'filename',
-    component: 'component'
-  };
-
-  export type Mdl_filesScalarFieldEnum = (typeof Mdl_filesScalarFieldEnum)[keyof typeof Mdl_filesScalarFieldEnum]
-
-
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-  export const TransactionIsolationLevel: {
-    ReadUncommitted: 'ReadUncommitted',
-    ReadCommitted: 'ReadCommitted',
-    RepeatableRead: 'RepeatableRead',
-    Serializable: 'Serializable'
-  };
-
-  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
   /**
@@ -7968,8 +8120,8 @@ export namespace Prisma {
 
   export type IntFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -7979,8 +8131,8 @@ export namespace Prisma {
 
   export type StringFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -7992,8 +8144,8 @@ export namespace Prisma {
   }
 
   export type Mdl_course_categoriesRelationFilter = {
-    is?: mdl_course_categoriesWhereInput
-    isNot?: mdl_course_categoriesWhereInput
+    is?: mdl_course_categoriesWhereInput | null
+    isNot?: mdl_course_categoriesWhereInput | null
   }
 
   export type Mdl_customfield_dataListRelationFilter = {
@@ -8062,8 +8214,8 @@ export namespace Prisma {
 
   export type IntWithAggregatesFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8078,8 +8230,8 @@ export namespace Prisma {
 
   export type StringWithAggregatesFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -8132,8 +8284,8 @@ export namespace Prisma {
   }
 
   export type Mdl_courseRelationFilter = {
-    is?: mdl_courseWhereInput
-    isNot?: mdl_courseWhereInput
+    is?: mdl_courseWhereInput | null
+    isNot?: mdl_courseWhereInput | null
   }
 
   export type Mdl_filesListRelationFilter = {
@@ -8177,8 +8329,8 @@ export namespace Prisma {
   }
 
   export type Mdl_contextRelationFilter = {
-    is?: mdl_contextWhereInput
-    isNot?: mdl_contextWhereInput
+    is?: mdl_contextWhereInput | null
+    isNot?: mdl_contextWhereInput | null
   }
 
   export type mdl_filesCountOrderByAggregateInput = {
@@ -8213,8 +8365,8 @@ export namespace Prisma {
   }
 
   export type Mdl_customfield_fieldRelationFilter = {
-    is?: mdl_customfield_fieldWhereInput
-    isNot?: mdl_customfield_fieldWhereInput
+    is?: mdl_customfield_fieldWhereInput | null
+    isNot?: mdl_customfield_fieldWhereInput | null
   }
 
   export type mdl_customfield_dataCountOrderByAggregateInput = {
@@ -8578,8 +8730,8 @@ export namespace Prisma {
 
   export type NestedIntFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8589,8 +8741,8 @@ export namespace Prisma {
 
   export type NestedStringFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string
@@ -8603,8 +8755,8 @@ export namespace Prisma {
 
   export type NestedIntWithAggregatesFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8619,8 +8771,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter = {
     equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
     lt?: number
     lte?: number
     gt?: number
@@ -8630,8 +8782,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter = {
     equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
+    in?: Enumerable<string> | string
+    notIn?: Enumerable<string> | string
     lt?: string
     lte?: string
     gt?: string

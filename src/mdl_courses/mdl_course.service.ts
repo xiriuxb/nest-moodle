@@ -22,7 +22,7 @@ export class MdlCourseService{
                 return({
                     id:course.id,
                     fullname:course.fullname,
-                    shoertname:course.shortname,
+                    shortname:course.shortname,
                     summary:course.summary,
                     category:course.category_name.name,
                     price:parseFloat(course.custom_data[0].value),

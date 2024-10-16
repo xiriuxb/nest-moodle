@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const {
   Decimal,
   objectEnumValues,
-  makeStrictEnum
+  makeStrictEnum,
+  Public,
 } = require('./runtime/index-browser')
 
 
@@ -13,12 +14,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.7.1
- * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
+ * Prisma Client JS version: 4.16.2
+ * Query Engine version: 4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
  */
 Prisma.prismaVersion = {
-  client: "4.7.1",
-  engine: "272861e07ab64f234d3ffc4094e32bd61775599c"
+  client: "4.16.2",
+  engine: "4bc8b6e1b66cb932731fb1bdbbc550d1e010de81"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -66,8 +67,19 @@ Prisma.raw = () => {
   throw new Error(`raw is unable to be run in the browser.
 In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
 )}
-Prisma.validator = () => (val) => val
+Prisma.validator = Public.validator
 
+/**
+* Extensions
+*/
+Prisma.getExtensionContext = () => {
+  throw new Error(`Extensions.getExtensionContext is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
+Prisma.defineExtension = () => {
+  throw new Error(`Extensions.defineExtension is unable to be run in the browser.
+In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+)}
 
 /**
  * Shorthand utilities for JSON filtering
@@ -85,58 +97,6 @@ Prisma.NullTypes = {
 /**
  * Enums
  */
-// Based on
-// https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-function makeEnum(x) { return x; }
-
-exports.Prisma.Mdl_contextScalarFieldEnum = makeEnum({
-  id: 'id',
-  instanceid: 'instanceid',
-  contextlevel: 'contextlevel'
-});
-
-exports.Prisma.Mdl_courseScalarFieldEnum = makeEnum({
-  id: 'id',
-  category: 'category',
-  fullname: 'fullname',
-  shortname: 'shortname',
-  summary: 'summary',
-  visible: 'visible',
-  timecreated: 'timecreated'
-});
-
-exports.Prisma.Mdl_course_categoriesScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  visible: 'visible'
-});
-
-exports.Prisma.Mdl_customfield_dataScalarFieldEnum = makeEnum({
-  id: 'id',
-  instanceid: 'instanceid',
-  fieldid: 'fieldid',
-  value: 'value',
-  valueformat: 'valueformat',
-  charvalue: 'charvalue'
-});
-
-exports.Prisma.Mdl_customfield_fieldScalarFieldEnum = makeEnum({
-  id: 'id',
-  shortname: 'shortname',
-  name: 'name'
-});
-
-exports.Prisma.Mdl_filesScalarFieldEnum = makeEnum({
-  id: 'id',
-  contextid: 'contextid',
-  filename: 'filename',
-  component: 'component'
-});
-
-exports.Prisma.SortOrder = makeEnum({
-  asc: 'asc',
-  desc: 'desc'
-});
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
@@ -145,15 +105,64 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.Mdl_courseScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  fullname: 'fullname',
+  shortname: 'shortname',
+  summary: 'summary',
+  visible: 'visible',
+  timecreated: 'timecreated'
+};
 
-exports.Prisma.ModelName = makeEnum({
+exports.Prisma.Mdl_course_categoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  visible: 'visible'
+};
+
+exports.Prisma.Mdl_contextScalarFieldEnum = {
+  id: 'id',
+  instanceid: 'instanceid',
+  contextlevel: 'contextlevel'
+};
+
+exports.Prisma.Mdl_filesScalarFieldEnum = {
+  id: 'id',
+  contextid: 'contextid',
+  filename: 'filename',
+  component: 'component'
+};
+
+exports.Prisma.Mdl_customfield_dataScalarFieldEnum = {
+  id: 'id',
+  instanceid: 'instanceid',
+  fieldid: 'fieldid',
+  value: 'value',
+  valueformat: 'valueformat',
+  charvalue: 'charvalue'
+};
+
+exports.Prisma.Mdl_customfield_fieldScalarFieldEnum = {
+  id: 'id',
+  shortname: 'shortname',
+  name: 'name'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+
+exports.Prisma.ModelName = {
   mdl_course: 'mdl_course',
   mdl_course_categories: 'mdl_course_categories',
   mdl_context: 'mdl_context',
   mdl_files: 'mdl_files',
   mdl_customfield_data: 'mdl_customfield_data',
   mdl_customfield_field: 'mdl_customfield_field'
-});
+};
 
 /**
  * Create the Client

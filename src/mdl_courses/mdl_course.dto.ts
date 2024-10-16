@@ -1,5 +1,5 @@
-import { Type } from "class-transformer";
-import { IsInt, IsNumber, Max, Min } from "class-validator";
+import { Exclude, Expose, Type } from "class-transformer";
+import { IsArray, IsInt, IsNumber, IsString, Max, Min } from "class-validator";
 
 export class GetAllMdlCoursesDTO{
     @IsInt({message:'Debe ser un número'})

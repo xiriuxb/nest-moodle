@@ -1,10 +1,14 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { DatabaseService } from "src/database/database.service";
+import { EmailTemplates, MailService } from "src/mail/mail.service";
 import { ChangeEmailDto, ChangePasswordDto, DeleteProfileDto, UpdateInfoDto } from "./user.dto";
 
 @Injectable()
 export class UserService {
-    constructor(private dbService: DatabaseService) { }
+    constructor(
+        private dbService: DatabaseService,
+        private mailService: MailService
+    ) { }
 
     async changePassword(dto:ChangePasswordDto, userId:number){
         const user = await this.dbService.user.findFirst({
@@ -28,6 +32,7 @@ export class UserService {
                     password:newPassword,
                 }
             });
+            await this.mailService.sendEmail(user.email, EmailTemplates.PASSWORD_UPDATED,{name:user.name});
             return {message:'Ok'}
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
@@ -53,6 +58,8 @@ export class UserService {
                     email:dto.new_email,
                 }
             });
+            await this.mailService.sendEmail(user.email, EmailTemplates.EMAIL_UPDATED,{name:user.name});
+            await this.mailService.sendEmail(dto.new_email, EmailTemplates.EMAIL_UPDATED,{name:user.name});
             return {message:'OK'}
         } catch(error){
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
