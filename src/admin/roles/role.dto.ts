@@ -1,7 +1,9 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsAlpha, IsBoolean, IsIn, IsNotEmpty, IsOptional } from "class-validator";
 
 export class CreateRoleDto{
+    @ApiProperty({ format: 'integer' })
     @IsNotEmpty({message:'Campo requerido.'})
     @IsAlpha('es-ES',{message:'Debe contener solo letras'})
     name:  string;

@@ -1,16 +1,17 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { CreateRoleDto, UpdateRoleDto } from "./role.dto";
-import { RoleServie } from "./role.service";
+import { RoleService } from "./role.service";
 
 @ApiTags('admin/roles')
 @Controller('admin/roles')
 export class RoleController{
     constructor(
-        private roleService:RoleServie
+        private roleService:RoleService
     ){}
 
     @Post('/')
+    @ApiBody({type: CreateRoleDto, })
     createRole(
         @Body() dto:CreateRoleDto
     ){
@@ -27,6 +28,6 @@ export class RoleController{
         @Body() updateDto:UpdateRoleDto,
         @Param('id', ParseIntPipe) roleId : number
     ){
-        return this.roleService.updateRole(updateDto, roleId);
+        return this.roleService.updateRole(updateDto, roleId, 1);
     }
 }

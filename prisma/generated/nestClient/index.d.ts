@@ -54,6 +54,8 @@ export type RolePayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultAr
     active: number
     created_at: Date
     updated_at: Date
+    created_by: number | null
+    updated_by: number | null
   }, ExtArgs["result"]["role"]>
   composites: {}
 }
@@ -3092,11 +3094,15 @@ export namespace Prisma {
   export type RoleAvgAggregateOutputType = {
     id: number | null
     active: number | null
+    created_by: number | null
+    updated_by: number | null
   }
 
   export type RoleSumAggregateOutputType = {
     id: number | null
     active: number | null
+    created_by: number | null
+    updated_by: number | null
   }
 
   export type RoleMinAggregateOutputType = {
@@ -3105,6 +3111,8 @@ export namespace Prisma {
     active: number | null
     created_at: Date | null
     updated_at: Date | null
+    created_by: number | null
+    updated_by: number | null
   }
 
   export type RoleMaxAggregateOutputType = {
@@ -3113,6 +3121,8 @@ export namespace Prisma {
     active: number | null
     created_at: Date | null
     updated_at: Date | null
+    created_by: number | null
+    updated_by: number | null
   }
 
   export type RoleCountAggregateOutputType = {
@@ -3121,6 +3131,8 @@ export namespace Prisma {
     active: number
     created_at: number
     updated_at: number
+    created_by: number
+    updated_by: number
     _all: number
   }
 
@@ -3128,11 +3140,15 @@ export namespace Prisma {
   export type RoleAvgAggregateInputType = {
     id?: true
     active?: true
+    created_by?: true
+    updated_by?: true
   }
 
   export type RoleSumAggregateInputType = {
     id?: true
     active?: true
+    created_by?: true
+    updated_by?: true
   }
 
   export type RoleMinAggregateInputType = {
@@ -3141,6 +3157,8 @@ export namespace Prisma {
     active?: true
     created_at?: true
     updated_at?: true
+    created_by?: true
+    updated_by?: true
   }
 
   export type RoleMaxAggregateInputType = {
@@ -3149,6 +3167,8 @@ export namespace Prisma {
     active?: true
     created_at?: true
     updated_at?: true
+    created_by?: true
+    updated_by?: true
   }
 
   export type RoleCountAggregateInputType = {
@@ -3157,6 +3177,8 @@ export namespace Prisma {
     active?: true
     created_at?: true
     updated_at?: true
+    created_by?: true
+    updated_by?: true
     _all?: true
   }
 
@@ -3253,6 +3275,8 @@ export namespace Prisma {
     active: number
     created_at: Date
     updated_at: Date
+    created_by: number | null
+    updated_by: number | null
     _count: RoleCountAggregateOutputType | null
     _avg: RoleAvgAggregateOutputType | null
     _sum: RoleSumAggregateOutputType | null
@@ -3280,6 +3304,8 @@ export namespace Prisma {
     active?: boolean
     created_at?: boolean
     updated_at?: boolean
+    created_by?: boolean
+    updated_by?: boolean
     permissions?: boolean | Role$permissionsArgs<ExtArgs>
     users?: boolean | Role$usersArgs<ExtArgs>
     _count?: boolean | RoleCountOutputTypeArgs<ExtArgs>
@@ -3291,6 +3317,8 @@ export namespace Prisma {
     active?: boolean
     created_at?: boolean
     updated_at?: boolean
+    created_by?: boolean
+    updated_by?: boolean
   }
 
   export type RoleInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
@@ -11135,7 +11163,9 @@ export namespace Prisma {
     name: 'name',
     active: 'active',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    created_by: 'created_by',
+    updated_by: 'updated_by'
   };
 
   export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
@@ -11356,6 +11386,8 @@ export namespace Prisma {
     active?: IntFilter | number
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
+    created_by?: IntNullableFilter | number | null
+    updated_by?: IntNullableFilter | number | null
     permissions?: PermissionListRelationFilter
     users?: UserListRelationFilter
   }
@@ -11366,6 +11398,8 @@ export namespace Prisma {
     active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    created_by?: SortOrderInput | SortOrder
+    updated_by?: SortOrderInput | SortOrder
     permissions?: PermissionOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
   }
@@ -11381,6 +11415,8 @@ export namespace Prisma {
     active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    created_by?: SortOrderInput | SortOrder
+    updated_by?: SortOrderInput | SortOrder
     _count?: RoleCountOrderByAggregateInput
     _avg?: RoleAvgOrderByAggregateInput
     _max?: RoleMaxOrderByAggregateInput
@@ -11397,6 +11433,8 @@ export namespace Prisma {
     active?: IntWithAggregatesFilter | number
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
+    created_by?: IntNullableWithAggregatesFilter | number | null
+    updated_by?: IntNullableWithAggregatesFilter | number | null
   }
 
   export type PermissionWhereInput = {
@@ -11955,6 +11993,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     permissions?: PermissionCreateNestedManyWithoutRolesInput
     users?: UserCreateNestedManyWithoutRolesInput
   }
@@ -11965,6 +12005,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
     users?: UserUncheckedCreateNestedManyWithoutRolesInput
   }
@@ -11974,6 +12016,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     permissions?: PermissionUpdateManyWithoutRolesNestedInput
     users?: UserUpdateManyWithoutRolesNestedInput
   }
@@ -11984,6 +12028,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
     users?: UserUncheckedUpdateManyWithoutRolesNestedInput
   }
@@ -11994,6 +12040,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
   }
 
   export type RoleUpdateManyMutationInput = {
@@ -12001,6 +12049,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type RoleUncheckedUpdateManyInput = {
@@ -12009,6 +12059,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type PermissionCreateInput = {
@@ -12757,6 +12809,17 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
+  export type IntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableFilter | number | null
+  }
+
   export type PermissionListRelationFilter = {
     every?: PermissionWhereInput
     some?: PermissionWhereInput
@@ -12783,11 +12846,15 @@ export namespace Prisma {
     active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    created_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type RoleAvgOrderByAggregateInput = {
     id?: SortOrder
     active?: SortOrder
+    created_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type RoleMaxOrderByAggregateInput = {
@@ -12796,6 +12863,8 @@ export namespace Prisma {
     active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    created_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type RoleMinOrderByAggregateInput = {
@@ -12804,11 +12873,31 @@ export namespace Prisma {
     active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    created_by?: SortOrder
+    updated_by?: SortOrder
   }
 
   export type RoleSumOrderByAggregateInput = {
     id?: SortOrder
     active?: SortOrder
+    created_by?: SortOrder
+    updated_by?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | number | null
+    notIn?: Enumerable<number> | number | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableWithAggregatesFilter | number | null
+    _count?: NestedIntNullableFilter
+    _avg?: NestedFloatNullableFilter
+    _sum?: NestedIntNullableFilter
+    _min?: NestedIntNullableFilter
+    _max?: NestedIntNullableFilter
   }
 
   export type PermissionCountOrderByAggregateInput = {
@@ -13056,17 +13145,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter
   }
 
-  export type IntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | number | null
-    notIn?: Enumerable<number> | number | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
   export type UserRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -13142,22 +13220,6 @@ export namespace Prisma {
     enrolment_status_id?: SortOrder
     payment_id?: SortOrder
     course_id?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | number | null
-    notIn?: Enumerable<number> | number | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
   }
 
   export type TestimonialCountOrderByAggregateInput = {
@@ -13331,6 +13393,14 @@ export namespace Prisma {
     create?: XOR<Enumerable<UserCreateWithoutRolesInput>, Enumerable<UserUncheckedCreateWithoutRolesInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutRolesInput>
     connect?: Enumerable<UserWhereUniqueInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type PermissionUpdateManyWithoutRolesNestedInput = {
@@ -13671,14 +13741,6 @@ export namespace Prisma {
     update?: XOR<CourseUpdateWithoutEnrolmentsInput, CourseUncheckedUpdateWithoutEnrolmentsInput>
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NestedIntFilter = {
     equals?: number
     in?: Enumerable<number> | number
@@ -13840,22 +13902,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
-  export type NestedFloatWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number> | number
-    notIn?: Enumerable<number> | number
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedFloatFilter
-    _min?: NestedFloatFilter
-    _max?: NestedFloatFilter
-  }
-
   export type NestedIntNullableWithAggregatesFilter = {
     equals?: number | null
     in?: Enumerable<number> | number | null
@@ -13883,11 +13929,29 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter | number | null
   }
 
+  export type NestedFloatWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedFloatFilter
+    _min?: NestedFloatFilter
+    _max?: NestedFloatFilter
+  }
+
   export type RoleCreateWithoutUsersInput = {
     name: string
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     permissions?: PermissionCreateNestedManyWithoutRolesInput
   }
 
@@ -13897,6 +13961,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
   }
 
@@ -13963,6 +14029,8 @@ export namespace Prisma {
     active?: IntFilter | number
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
+    created_by?: IntNullableFilter | number | null
+    updated_by?: IntNullableFilter | number | null
   }
 
   export type EnrolmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -14122,6 +14190,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     users?: UserCreateNestedManyWithoutRolesInput
   }
 
@@ -14131,6 +14201,8 @@ export namespace Prisma {
     active?: number
     created_at?: Date | string
     updated_at?: Date | string
+    created_by?: number | null
+    updated_by?: number | null
     users?: UserUncheckedCreateNestedManyWithoutRolesInput
   }
 
@@ -14683,6 +14755,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     permissions?: PermissionUpdateManyWithoutRolesNestedInput
   }
 
@@ -14692,6 +14766,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
   }
 
@@ -14701,6 +14777,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type EnrolmentUpdateWithoutUserInput = {
@@ -14815,6 +14893,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutRolesNestedInput
   }
 
@@ -14824,6 +14904,8 @@ export namespace Prisma {
     active?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updated_by?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutRolesNestedInput
   }
 

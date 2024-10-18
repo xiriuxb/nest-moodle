@@ -37,6 +37,8 @@ model Role {
   active      Int          @default(1) @db.TinyInt
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
+  created_by  Int?
+  updated_by  Int?
   permissions Permission[]
   users       User[]
 }
