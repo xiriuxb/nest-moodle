@@ -32,12 +32,12 @@ async function bootstrap() {
           formattedErrors[error.property] = Object.values(error.constraints);
         }
 
-        return new BadRequestException({
+        return {
           response: formattedErrors,
           status: HttpStatus.BAD_REQUEST,
           message: 'Bad Request Exception',
           name: 'BadRequestException',
-        });
+        };
       },
     }),
   );
