@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Logger, Patch, Post, Req, UseGuards } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger"
+import { Body, Controller, Get, Patch, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"
 import { User } from "prisma/generated/nestClient";
 import { GetUser } from "src/auth/decorator/get-user.decorator";
 import { JwtGuardBearer } from "src/auth/guards/jwt_bearer.guard";
@@ -15,6 +15,7 @@ export class UserController{
 
     @Patch('change-password')
     @UseGuards(JwtGuardBearer)
+    @ApiBearerAuth()
     changePassword(
         @Body() dto:ChangePasswordDto,
         @GetUser() user:User
